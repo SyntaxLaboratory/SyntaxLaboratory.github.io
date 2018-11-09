@@ -1,0 +1,1102 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+<html>
+<head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width,initial-scale=1.0' />
+    <title>p@mo | cARd by HOV | v 0.24.0</title>
+    <link rel='stylesheet' type='text/css' href='./css/rfid.css' />
+    <link rel='stylesheet' type='text/css' href='./css/page-overlay.css' />
+    <script src='./js/jquery-3.2.1.min.js'></script>
+    <script src='./js/aframe.min.js'></script>
+    <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+    <script>
+        var sessionManager = {
+            mode: 'ar',
+            cardContentsLoaded: false,
+            status: -1,
+            onPage: null,
+            pages: ['linkedin', 'call', 'pARk', 'media', 'exposition'],
+            addressBookVisible: false,
+            photosInView: false,
+            nameOfPIVs: null,
+            mediaMenuVisible: false,
+            expositionMenuVisible: false,
+            globeRotating: true,
+            arPageHandler: {
+                currentPage: null,
+                pageContainerOpen: false,
+                custom: null
+            }
+        };
+<<<<<<< HEAD
+
+        function requestFullScreen(element) { //    makes the application fullscreen on fullscreen equipped browsers
+            var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen; // Supports most browsers and their versions.
+
+=======
+        function requestFullScreen(element) { //    makes the application fullscreen on fullscreen equipped browsers
+            var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen; // Supports most browsers and their versions.
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+            if (requestMethod) { // Native full screen.
+                requestMethod.call(element);
+                //console.log('this element');
+            } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+                var wscript = new ActiveXObject("WScript.Shell");
+                if (wscript !== null) {
+                    wscript.SendKeys("{F11}");
+                }
+            }
+        }
+        
+        function initializeSession(data){
+            sessionManager.cardContentsLoaded = true;
+            sessionManager.status = 0;
+            sessionManager.onPage = 'pARk';
+            
+            setTimeout(function(){
+                document.querySelector('#pARk-button').emit('bounce-pARk');
+            }, 6000);
+        }
+        
+        function gotDevices(deviceInfos) {
+            var videoSelect = document.querySelector('select#videoSource');
+            for (var i = 0; i !== deviceInfos.length; ++i) {
+                var deviceInfo = deviceInfos[i];
+                var option = document.createElement('option');
+                option.value = deviceInfo.deviceId;
+<<<<<<< HEAD
+
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+                if (deviceInfo.kind === 'videoinput') {
+                    option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
+                    videoSelect.appendChild(option);
+                }
+                else {
+                    console.log('Found one other kind of source/device: ', deviceInfo);
+                }
+            }
+        }
+<<<<<<< HEAD
+
+        function getStream() {
+            var videoSelect = document.querySelector('select#videoSource');
+
+=======
+        function getStream() {
+            var videoSelect = document.querySelector('select#videoSource');
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+            if (window.stream) {
+                window.stream.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+            }
+<<<<<<< HEAD
+
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+            var constraints = {
+                video: {
+                    deviceId: {exact: videoSelect.value}
+                }
+            };
+<<<<<<< HEAD
+
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+            navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleError);
+        }
+        
+        function gotStream(stream) {
+            window.stream = stream; // make stream available to console
+            video.srcObject = stream;
+            //video.play();
+        }
+<<<<<<< HEAD
+
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+        function handleError(error) {
+            console.log('Error: ', error);
+        }
+        
+        $(document).ready(function(){
+            initializeSession();
+<<<<<<< HEAD
+
+            // FIRST STAGE
+            $('#launch-application-page').click(function(){
+
+                console.log('application launch...');
+
+                var elem = document.body;
+                requestFullScreen(elem);
+
+=======
+            // FIRST STAGE
+            $('#launch-application-page').click(function(){
+                console.log('application launch...');
+                var elem = document.body;
+                requestFullScreen(elem);
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+                $(this).animate({
+                    height: 0
+                }, 2500, function(){
+                    $('.option-button').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                    
+                    $(this).hide();
+                     var video = document.getElementById('video');
+                    var videoSelect = document.querySelector('select#videoSource');
+                    // Get access to the camera!
+                    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        // Not adding `{ audio: true }` since we only want video now
+                        navigator.mediaDevices.enumerateDevices().then(gotDevices).then(getStream).catch(handleError);
+<<<<<<< HEAD
+
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+                        videoSelect.onchange = getStream;
+                    }
+                });
+            });
+            
+            $('#next-option-button').click(function(){
+                if(sessionManager.status==0&&sessionManager.onPage=='pARk'){
+                    sessionManager.status=0;
+                    //document.getElementById('pARk-animation').setAttribute('repeat', '0');
+                    document.querySelector(`#pARk-button`).emit(`kill-pARk`);
+                    document.querySelector(`#pARk-button`).emit(`deselect-pARk`);
+                    $('#center-button-label').attr('value','explore');
+                }
+                else{
+                    if(sessionManager.status==sessionManager.pages.length-1){
+                        sessionManager.status=0;
+                      //  document.getElementById('exposition-animation').setAttribute('repeat', '0');
+                        document.querySelector(`#exposition-button`).emit(`kill-exposition`);
+                        document.querySelector(`#exposition-button`).emit(`deselect-exposition`);
+                    }
+                    else{
+                        sessionManager.status++;
+                    }
+                }
+                
+                if(sessionManager.status>0){
+                    var prev = sessionManager.pages[sessionManager.status-1];
+                    //document.getElementById(`${prev}-animation`).setAttribute('repeat', '0');    
+                    document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
+                    document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
+                }
+<<<<<<< HEAD
+
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+                //document.getElementById(`${page}-animation`).setAttribute('repeat', 'indefinite');
+                if(sessionManager.mediaMenuVisible==true){
+                    document.querySelector('#media-item-0').emit('hide-media-item-0');
+                    document.querySelector('#media-item-1').emit('hide-media-item-1');
+                    document.querySelector('#media-item-2').emit('hide-media-item-2');
+                    sessionManager.mediaMenuVisible = false;
+                }
+                
+                if(sessionManager.expositionMenuVisible==true){
+                    document.querySelector('#exposition-item-0').emit('hide-exposition-item-0');
+                    document.querySelector('#exposition-item-1').emit('hide-exposition-item-1');
+                    document.querySelector('#exposition-item-2').emit('hide-exposition-item-2');
+                    sessionManager.expositionMenuVisible = false;
+                }
+                
+                if(sessionManager.globeRotating==true){
+                    document.querySelector('#globe-model').emit('stop-rotating');
+                    document.querySelector('#globe-model').setAttribute('visible', 'false');
+                    sessionManager.globeRotating = false;
+                }
+                
+                if(sessionManager.addressBookVisible==true){
+                    document.querySelector('#contact-0').emit('hide-contact-0');
+                    document.querySelector('#contact-1').emit('hide-contact-1');
+                    document.querySelector('#contact-2').emit('hide-contact-2');
+                    sessionManager.addressBookVisible=false;
+                }
+                
+                document.querySelector(`#${page}-button`).emit(`select-${page}`);
+                document.querySelector(`#${page}-button`).emit(`bounce-${page}`);
+                console.log(`now on page ${page}`);
+                
+                if(sessionManager.photosInView&&page!='linkedin'){
+                    for(var i=0; i<sessionManager.nameOfPIVs.length; i++){
+                        var photo = sessionManager.nameOfPIVs[i];
+                        document.querySelector(photo).emit('hide-linkedin-photo');
+                    }
+                }
+                
+                $('#left-content-panel').attr('visible', 'true');
+                $('#left-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                $('#user-model').attr('visible', 'true');
+                $('#center-call-icon').attr('visible', 'false');
+                $('#right-content-panel').attr('visible', 'true');
+                $('#right-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                switch(page){
+                    case 'linkedin':
+                        document.querySelector('#linkedin-photo').emit('show-linkedin-photo');
+                        sessionManager.photosInView = true;
+                        sessionManager.nameOfPIVs = ['#linkedin-photo'];
+                        
+                        $('#left-content-panel').attr('visible', 'false');
+                        
+                        $('#right-content-panel').attr('material', 'color: blue; side: double; transparent: true; opacity: 0.3;');
+                        $('#right-content-panel').attr('value','Founder, CEO @ House of Venus \n\nCollege Park, MD\n\nUniversity of Maryland\nB.S. Mathematics \'20\nSee Connections');
+                        $('#cARd-ar-title').attr('value', 'Patrice-Morgan Ongoly');
+                        $('#cARd-ar-title').attr('material','color: blue; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'call':
+                        $('#center-call-icon').attr('visible', 'true');
+                        $('#user-model').attr('visible', 'false');
+                        $('#left-content-panel').attr('visible', 'false');
+                        $('#cARd-ar-title').attr('value', 'CALL');
+                        
+                        $('#cARd-ar-title').attr('material','color: green; side: double; transparent: true; opacity: 0.5;');
+                        
+                        $('#right-content-panel').attr('visible', 'false');
+                        
+                        document.querySelector('#contact-0').emit('show-contact-0');
+                        document.querySelector('#contact-1').emit('show-contact-1');
+                        document.querySelector('#contact-2').emit('show-contact-2');
+                        
+                        sessionManager.addressBookVisible = true;
+                        break;
+                    case 'pARk':
+                        $('#user-model').attr('visible', 'false');
+                        $('#right-content-panel').attr('visible','false');
+                        $('#cARd-ar-title').attr('value', 'EXPLORE');
+                        $('#globe-model').attr('visible','true');
+                        document.querySelector('#globe-model').emit('start-rotating');
+                        sessionManager.globeRotating = true;
+                        
+                        $('#left-content-panel').attr('value','select\n a\n location');
+                        document.querySelector('#left-content-panel').setAttribute('geometry', 'primitive: plane; width: 3; height: 3;');
+                        $('#left-content-panel').attr('material', 'color: black; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#cARd-ar-title').attr('material','color: black; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'media':
+                        $('#user-model').attr('visible', 'false');
+                        
+                        $('#left-content-panel').attr('visible', 'false');
+                        $('#right-content-panel').attr('visible', 'false');
+                        
+                        document.querySelector('#media-item-0').emit('show-media-item-0');
+                        document.querySelector('#media-item-1').emit('show-media-item-1');
+                        document.querySelector('#media-item-2').emit('show-media-item-2');
+                        sessionManager.mediaMenuVisible = true;
+                        
+                        $('#cARd-ar-title').attr('value', 'MEDIA');
+                        $('#cARd-ar-title').attr('material','color: red; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'exposition':
+                        $('#user-model').attr('visible', 'false');
+                        
+                        $('#left-content-panel').attr('visible', 'false');
+                        $('#right-content-panel').attr('visible', 'false');
+                        
+                        document.querySelector('#exposition-item-0').emit('show-exposition-item-0');
+                        document.querySelector('#exposition-item-1').emit('show-exposition-item-1');
+                        document.querySelector('#exposition-item-2').emit('show-exposition-item-2');
+                        
+                        sessionManager.expositionMenuVisible = true;
+                        
+                        $('#cARd-ar-title').attr('value', 'EXPOSITION');
+                        $('#cARd-ar-title').attr('material','color: violet; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    default:
+                        break;
+                }
+            });
+            
+            $('#prev-option-button').click(function(){
+                if(sessionManager.status==0&&sessionManager.onPage=='pARk'){
+                    sessionManager.status=sessionManager.pages.length-1;
+                    document.querySelector(`#pARk-button`).emit(`kill-pARk`);
+                    document.querySelector(`#pARk-button`).emit(`deselect-pARk`);
+                    $('#center-button-label').attr('value','explore');
+                }
+                else{
+                    if(sessionManager.status==0){
+                        sessionManager.status=sessionManager.pages.length-1;
+                        document.querySelector(`#linkedin-button`).emit(`kill-linkedin`);
+                        document.querySelector(`#linkedin-button`).emit(`deselect-linkedin`);
+                    }
+                    else{
+                        sessionManager.status--;
+                    }
+                }
+                
+                if(sessionManager.status<sessionManager.pages.length-1){
+                    var prev = sessionManager.pages[sessionManager.status+1];
+                    document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
+                    document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
+                }
+<<<<<<< HEAD
+
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+
+=======
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
+                if(sessionManager.mediaMenuVisible==true){
+                    document.querySelector('#media-item-0').emit('hide-media-item-0');
+                    document.querySelector('#media-item-1').emit('hide-media-item-1');
+                    document.querySelector('#media-item-2').emit('hide-media-item-2');
+                }                
+                
+                if(sessionManager.globeRotating==true){
+                    document.querySelector('#globe-model').emit('stop-rotating');
+                    document.querySelector('#globe-model').setAttribute('visible', 'false');
+                    sessionManager.globeRotating = false;
+                }
+                
+                if(sessionManager.expositionMenuVisible==true){
+                    document.querySelector('#exposition-item-0').emit('hide-exposition-item-0');
+                    document.querySelector('#exposition-item-1').emit('hide-exposition-item-1');
+                    document.querySelector('#exposition-item-2').emit('hide-exposition-item-2');
+                    sessionManager.expositionMenuVisible = false;
+                }
+                
+                if(sessionManager.addressBookVisible==true){
+                    document.querySelector('#contact-0').emit('hide-contact-0');
+                    document.querySelector('#contact-1').emit('hide-contact-1');
+                    document.querySelector('#contact-2').emit('hide-contact-2');
+                    sessionManager.addressBookVisible=false;
+                }
+                
+                document.querySelector(`#${page}-button`).emit(`select-${page}`);
+                document.querySelector(`#${page}-button`).emit(`bounce-${page}`);
+                console.log(`now on page ${page}`);
+                
+                if(sessionManager.photosInView&&page!='linkedin'){
+                    for(var i=0; i<sessionManager.nameOfPIVs.length; i++){
+                        var photo = sessionManager.nameOfPIVs[i];
+                        document.querySelector(photo).emit('hide-linkedin-photo');
+                    }
+                }
+                
+                $('#left-content-panel').attr('visible', 'true');
+                $('#left-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                $('#right-content-panel').attr('visible', 'true');
+                $('#right-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                $('#user-model').attr('visible', 'true');
+                $('#center-call-icon').attr('visible', 'false');
+                
+                switch(page){
+                    case 'linkedin':
+                        $('#left-content-panel').attr('visible', 'false');
+                        
+                        document.querySelector('#linkedin-photo').emit('show-linkedin-photo');
+                        sessionManager.photosInView = true;
+                        sessionManager.nameOfPIVs = ['#linkedin-photo'];
+                        
+                        $('#right-content-panel').attr('align', 'center');
+                        
+                        $('#right-content-panel').attr('value','Founder, CEO @ House of Venus \n\nCollege Park, MD\n\nUniversity of Maryland\nB.S. Mathematics \'20\nSee Connections');
+                        $('#right-content-panel').attr('material', 'color: blue; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#cARd-ar-title').attr('value', 'Patrice-Morgan Ongoly');
+                        $('#cARd-ar-title').attr('material','color: blue; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'call':
+                        $('#center-call-icon').attr('visible', 'true');
+                        $('#user-model').attr('visible', 'false');
+                        $('#left-content-panel').attr('visible', 'false');
+                        
+                        $('#cARd-ar-title').attr('value', 'CALL');
+                        $('#right-content-panel').attr('visible', 'false');
+                        
+                        document.querySelector('#contact-0').emit('show-contact-0');
+                        document.querySelector('#contact-1').emit('show-contact-1');
+                        document.querySelector('#contact-2').emit('show-contact-2');
+                        
+                        sessionManager.addressBookVisible = true;
+                        $('#cARd-ar-title').attr('material','color: green; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'pARk':
+                        $('#user-model').attr('visible', 'false');
+                        $('#right-content-panel').attr('visible','false');
+                        $('#cARd-ar-title').attr('value', 'EXPLORE');
+                        $('#globe-model').attr('visible','true');
+                        document.querySelector('#globe-model').emit('start-rotating');
+                        sessionManager.globeRotating = true;
+                        
+                        $('#left-content-panel').attr('value','select\n a\n location');
+                        document.querySelector('#left-content-panel').setAttribute('geometry', 'primitive: plane; width: 3; height: 3;');
+                        $('#left-content-panel').attr('material', 'color: black; side: double; transparent: true; opacity: 0.3;');
+                        
+                        console.log('testing above line 353');
+                        $('#cARd-ar-title').attr('material','color: black; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'media':
+                        $('#user-model').attr('visible', 'false');
+                        $('#left-content-panel').attr('visible', 'false');
+                        $('#right-content-panel').attr('visible', 'false');
+                        
+                        document.querySelector('#media-item-0').emit('show-media-item-0');
+                        document.querySelector('#media-item-1').emit('show-media-item-1');
+                        document.querySelector('#media-item-2').emit('show-media-item-2');
+                        sessionManager.mediaMenuVisible = true;
+                        
+                        $('#cARd-ar-title').attr('value', 'MEDIA');
+                        $('#cARd-ar-title').attr('material','color: red; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'exposition':
+                        $('#user-model').attr('visible', 'false');
+                        $('#left-content-panel').attr('visible', 'false');
+                        $('#right-content-panel').attr('visible', 'false');
+                        $('#cARd-ar-title').attr('value', 'EXPOSITION');
+                        
+                        document.querySelector('#exposition-item-0').emit('show-exposition-item-0');
+                        document.querySelector('#exposition-item-1').emit('show-exposition-item-1');
+                        document.querySelector('#exposition-item-2').emit('show-exposition-item-2');
+                        
+                        sessionManager.expositionMenuVisible = true;
+                        $('#cARd-ar-title').attr('material','color: violet; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    default:
+                        break;
+                }
+            });
+            
+            function hideARButton(item, parent){
+                var total = parent || sessionManager.pages;
+                var i = item;
+                $(`#${total[i]}-button`).attr('visible', 'false');
+                $(`#${total[i]}-button-label`).attr('visible', 'false');
+            }
+            
+            function showARButton(item, parent){
+                var total = parent || sessionManager.pages;
+                var i = item;
+                $(`#${total[i]}-button`).attr('visible', 'true');
+                $(`#${total[i]}-button-label`).attr('visible', 'true');
+            }
+            
+            function hideARMenu(exceptFor){
+                var focus = exceptFor;
+                var total = sessionManager.pages;
+                
+                for(var i=0; i<total.length; i++){
+                    if(total[i]==focus){
+                        continue;
+                    }
+                    hideARButton(i, total);
+                }
+                sessionManager.arPageHandler.currentPage = focus;
+                sessionManager.arPageHandler.pageContainerOpen = false;
+                if(focus=='call'){
+                    console.log('call page');
+                    sessionManager.arPageHandler.custom = {
+                        onContact: 0,
+                        total: 3
+                    };
+                }
+            }
+            
+            function showARMenu(){
+                var total = sessionManager.pages;
+                for(var i=0; i<total.length; i++){
+                    showARButton(i);
+                }
+                sessionManager.arPageHandler.currentPage = null;
+                sessionManager.arPageHandler.pageContainerOpen = false;
+            }
+            
+            $('#back-to-ar-button').click(function(){
+                if(sessionManager.mode=='ar'){
+                    var page = sessionManager.arPageHandler.currentPage;
+                    
+                    switch(page){
+                        case 'linkedin':
+                            $('#linkedin-frame').animate({
+                                opacity: 0
+                            }, 1000, function(){
+                                $(this).hide();
+                            });
+                            
+                            $('#page-overlay-container').animate({
+                                height: 0
+                            }, 1000, function(){
+                                getStream();
+                                $(this).hide();
+                            });
+                            
+                            $('#back-to-ar-button').animate({
+                                opacity: 0
+                            }, 1000, function(){
+                                $(this).hide();
+                            });
+                            
+                            $('#linkedin-page-container').animate({
+                               opacity: 0
+                            }, 1000, function(){ 
+                                $(this).hide();
+                                sessionManager.arPageHandler.pageContainerOpen = false;
+                            });
+                            break;
+                        case 'call':
+                            showARMenu();
+                            $('#center-button-label').attr('visible', 'true');
+                            $('#contact-0').attr('material', 'color: white; side: double; transparent: true; opacity: 0.5;');
+                            $('#contact-0').attr('color','white');
+                            $('#center-call-icon').attr('material', 'src: #call-texture');
+                            $('.dpad-button').animate({
+                                opacity: 0
+                            }, 1000, function(){
+                                $(this).hide();
+                            });
+                            
+                            $('#back-to-ar-button').animate({
+                                opacity: 0
+                            }, 1000, function(){
+                                $(this).hide();
+                            });
+                            break;
+                        case 'pARk':
+                            console.log('TODO: (1) hide AR Menu options except for the current page option');
+                            console.log('TODO: (2) instructions appear and select a location is highlighted-->clicking changes globe color');
+                            //window.location.href = 'http://houseofven.us/pARk'
+                            break;
+                        case 'media':
+                            showARMenu();
+                            $('#center-button-label').attr('visible', 'true');
+                            document.querySelector('#media-item-0').emit('move-backward');
+                            document.querySelector('#media-item-1').emit('move-backward');
+                            document.querySelector('#media-item-2').emit('move-backward');
+                            
+                            $('#select-media-item-button').animate({
+                                opacity: 0
+                            }, 1000, function(){
+                                $(this).hide();
+                            });
+                            break;
+                        case 'exposition':
+                            showARMenu();
+                            $('#center-button-label').attr('visible', 'true');
+                            document.querySelector('#exposition-item-0').emit('move-backward');
+                            document.querySelector('#exposition-item-1').emit('move-backward');
+                            document.querySelector('#exposition-item-2').emit('move-backward');
+                            
+                            $('#select-media-item-button').animate({
+                                opacity: 0
+                            }, 1000, function(){
+                                $(this).hide();
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+            
+            $('#select-option-button').click(function(){
+                if(sessionManager.mode=='ar'){
+                    var page = sessionManager.pages[sessionManager.status] || 'pARk';
+                    sessionManager.arPageHandler.currentPage = page;
+                    
+                    switch(page){
+                        case 'linkedin':
+                            $('#page-overlay-container').show().animate({
+                                height: '100%'
+                            }, 1000, function(){
+                                if (window.stream) {
+                                    window.stream.getTracks().forEach(function(track) {
+                                        track.stop();
+                                    });
+                                }
+                            });
+                            
+                            $('#back-to-ar-button').show().animate({
+                                opacity: 1.0
+                            });
+                            
+                            $('#linkedin-frame').show().animate({
+                                opacity: 1.0
+                            }, 1000);
+                            
+                            $('#linkedin-page-container').show().animate({
+                               opacity: 1.0
+                            }, 1000, function(){
+                                sessionManager.arPageHandler.pageContainerOpen = true;
+                            });
+                            break;
+                        case 'call':
+                            hideARMenu('call');
+                            $('#center-button-label').attr('visible', 'false');
+                            $('#contact-0').attr('material', 'color: white; side: double; transparent: true; opacity: 0.9;');
+                            $('#contact-0').attr('color','black');
+                            $('#center-call-icon').attr('material', 'src: #vaibhav-photo');
+                            $('.dpad-button').show().animate({
+                                opacity: 1.0
+                            });
+                            
+                            $('#back-to-ar-button').show().animate({
+                                opacity: 1.0
+                            });
+                            
+                            console.log('TODO: (2) reveal the direction pad');
+                            console.log('TODO: (3) up and down animation functionality');
+                            //window.location.href = 'https://hangouts.google.com'
+                            break;
+                        case 'pARk':
+                            console.log('TODO: (1) hide AR Menu options except for the current page option');
+                            console.log('TODO: (2) instructions appear and select a location is highlighted-->clicking changes globe color');
+                            //window.location.href = 'http://houseofven.us/pARk'
+                            break;
+                        case 'media':
+                            hideARMenu('media');
+                            $('#center-button-label').attr('visible', 'false');
+                            document.querySelector('#media-item-0').emit('come-forward');
+                            document.querySelector('#media-item-1').emit('come-forward');
+                            document.querySelector('#media-item-2').emit('come-forward');
+                            
+                            $('#select-media-item-button').show().animate({
+                                opacity: 1.0
+                            });
+                            
+                            $('#back-to-ar-button').show().animate({
+                                opacity: 1.0
+                            });
+                            
+                            //console.log('reveal visual AR viewer');
+                            break;
+                        case 'exposition':
+                            hideARMenu('exposition');
+                            $('#center-button-label').attr('visible', 'false');
+                            document.querySelector('#exposition-item-0').emit('come-forward');
+                            document.querySelector('#exposition-item-1').emit('come-forward');
+                            document.querySelector('#exposition-item-2').emit('come-forward');
+                            
+                            $('#select-exposition-item-button').show().animate({
+                                opacity: 1.0
+                            });
+                            
+                            $('#back-to-ar-button').show().animate({
+                                opacity: 1.0
+                            });
+                            
+                            //window.location.href = 'https://www.exposition.com/houseofven.us'
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+            
+            
+            $('#linkedin-flat-button').click(function(){
+                window.location.href = 'https://www.linkedin.com/in/patrice-morgan-ongoly-1a206b74/';
+            });
+            
+            $('#call-flat-button').click(function(){
+                window.location.href = 'https://hangouts.google.com';
+            });
+            
+            $('#pARk-flat-button').click(function(){
+                window.location.href = 'http://houseofven.us/pARk';
+            });
+            
+            $('#media-flat-button').click(function(){
+                console.log('reveal visual AR viewer');
+            });
+            
+            $('#exposition-flat-button').click(function(){
+                console.log('open exposition flat page');
+            });
+            
+            $('#settings-flat-button').click(function(){
+                console.log('open settings page');
+            });
+            
+            $('#down-dpad-button').click(function(){
+                 if(sessionManager.mode=='ar'){
+                     var page = sessionManager.onPage;
+                     switch(page){
+                         case 'linkedin':
+                             console.log('no action available');
+                             break;
+                         case 'call':
+                             var current = sessionManager.arPageHandler.custom.onContact || 0;
+                             var listLength = sessionManager.arPageHandler.custom.total;
+                             if(current+1==listLength){
+                                 current = 0;
+                                 $('#contact-0').attr('material','color: white; side: double; transparent: true; opacity: 0.5;');
+                                 $('#contact-0').attr('color','white');   
+                             }
+                             else{
+                                 $(`#contact-${current}`).attr('material','color: white; side: double; transparent: true; opacity: 0.9;');
+                                 $(`#contact-${current}`).attr('color','black');
+                                 current++;                                 
+                             }
+                             $(`#contact-${current}`).attr('material','color: white; side: double; transparent: true; opacity: 0.9;');
+                             $(`#contact-${current}`).attr('color','black');  
+                             sessionManager.arPageHandler.custom.onContact = current;
+                             break;
+                         case 'pARk':
+                             break;
+                         case 'media':
+                             break;
+                         case 'exposition':
+                             break;
+                         default:
+                             break;
+                     }
+                 }
+            });
+            
+            $('#up-dpad-button').click(function(){
+                 if(sessionManager.mode=='ar'){
+                     var page = sessionManager.onPage;
+                     switch(page){
+                         case 'linkedin':
+                             console.log('no action available');
+                             break;
+                         case 'call':
+                             var current = sessionManager.arPageHandler.custom.onContact;
+                             var listLength = sessionManager.arPageHandler.custom.total;
+                             if(current==0){
+                                 current = listLength-1;
+                                 $('#contact-0').attr('material','color: white; side: double; transparent: true; opacity: 0.5;');
+                                 $('#contact-0').attr('color','white');
+                             }
+                             else{
+                                 current--;
+                             }
+                             
+                             $(`#contact-${current}`).attr('material','color: white; side: double; transparent: true; opacity: 0.9;');
+                             $(`#contact-${current}`).attr('color','black');  
+                                 
+                             sessionManager.arPageHandler.custom.onContact = current;
+                             break;
+                         case 'pARk':
+                             break;
+                         case 'media':
+                             break;
+                         case 'exposition':
+                             break;
+                         default:
+                             break;
+                     }
+                 }
+            });
+            $('#toggle-option-button').click(function(){
+                if(sessionManager.mode=='ar'){
+                    $('#standard-overlay-container').show().animate({
+                        height: '100%'
+                    }, 1500, function(){
+                        if (window.stream) {
+                            window.stream.getTracks().forEach(function(track) {
+                                track.stop();
+                            });
+                        }
+                    });
+                    
+                    $('#standard-overlay-contents').show().animate({
+                        opacity: 1.0
+                    }, 1500);
+                    
+                    sessionManager.mode = 'flat';
+                }
+                else if(sessionManager.mode=='flat'){
+                    $('#standard-overlay-container').animate({
+                        height: 0
+                    }, 1500, function(){
+                        getStream();
+                        $(this).hide();
+                    });
+                    
+                    $('#standard-overlay-contents').animate({
+                        opacity: 0
+                    }, 1500, function(){
+                        $(this).hide();
+                    });
+                    
+                    sessionManager.mode = 'ar';
+                }
+            });
+            
+        });
+    </script>
+</head>
+<body>
+    <input type='button' value='x' id='back-to-ar-button' />
+    <div id='page-overlay-container'>
+        <div id='linkedin-page-container' class='page-container'>
+            <iframe id='linkedin-frame' src='https://houseofvenus.github.io/linkedin' width='360' height='600'></iframe>
+        </div>
+        <div id='linkedin-page-container' class='page-container'>
+        
+        </div>
+        <div id='linkedin-page-container' class='page-container'>
+        
+        </div>
+        <div id='linkedin-page-container' class='page-container'>
+        
+        </div>
+        <div id='linkedin-page-container' class='page-container'>
+        
+        </div>
+        <div id='linkedin-page-container' class='page-container'>
+        
+        </div>
+        <div id='linkedin-page-container' class='page-container'>
+        
+        </div>
+    </div>
+    <div id='standard-overlay-container'>
+        <div id='standard-overlay-contents'>
+            <div id='overlay-contents-header'>
+                <h2>Patrice-Morgan Ongoly's</h2>
+                <h2>cARd</h2>
+            </div>
+            <input id='linkedin-flat-button' class='flat-option-button' type='button' />
+            <input id='call-flat-button' class='flat-option-button' type='button'/>
+            <input id='pARk-flat-button' class='flat-option-button' type='button'  />
+            <input id='media-flat-button' class='flat-option-button' type='button' />
+            <input id='exposition-flat-button' class='flat-option-button' type='button'/>
+            <input id='settings-flat-button' class='flat-option-button' type='button'/>
+            <div id='overlay-contents-footer'>    
+                <h4>House of Venus, Benefit Corporation | 2018</h4>
+            </div>
+        </div>
+    </div>
+    <div id='launch-application-page' class='entry-layer overlay'>
+        <div id='instructions'>
+            tap anywhere
+            <div id='logo'></div>
+            to view cARd
+        </div>
+    </div>
+    <!-- FOR PRODUCTION PURPOSES ONLY-->
+    <select id='videoSource'></select>
+    <input id='select-media-item-button' class='select-button' type='button' value='o' />
+    <input id='select-option-button' class='option-button' type='button' value='o' />
+    <input id='up-dpad-button' class='dpad-button' type='button' value='^' />
+    <input id='down-dpad-button' class='dpad-button' type='button' value='v' />
+    <input id='prev-option-button' class='option-button' type='button' value='<' />
+    <input id='next-option-button' class='option-button' type='button' value='>' />
+    <input id='toggle-option-button' class='option-button' type='button' value='t' />
+    
+    <video id="video" autoplay></video>
+    <div id='main-app-container' class='viewer-layer'>
+        <a-scene embedded id='rfid-experience-container'>
+            <a-assets>
+                <a-asset-item id='pamo-model' src='./media/model/ongoly.obj'></a-asset-item>
+                <img id='floor-texture' src='./media/texture/grid_pattern.png' preload='true' />
+                <img id='earth-texture' src='./media/texture/earthmap1k.jpg' preload='true' />
+                
+                <img id='earth-texture' src='./media/texture/earthmap1k.jpg' preload='true' />
+                <img id='linkedin-texture' src='./media/texture/linkedin-texture.png' preload='true'/>
+                <img id='call-texture' src='./media/texture/call-texture.png' preload='true'/>
+                <img id='vaibhav-photo' src='./media/texture/vaibhav-account-profile.png' preload='true'/>
+                <img id='pARk-texture' src='./media/texture/globe-texture.png'/>
+                <img id='media-texture' src='./media/texture/visuals-texture.png'/>
+                <img id='exposition-texture' src='./media/texture/exposition-texture.png'/>
+                <img id='linkedin-photo-texture' src='./media/texture/linkedin.png' />
+                
+                <img id='dw-docs-texture' src='./media/img/dw-icon.png' />
+                <img id='brilliant-podcast-texture' src='./media/img/brilliant-idiots-icon.png' />
+                <img id='aviation-texture' src='./media/img/cpaviation.png' />
+                <img id='route1-texture' src='./media/img/route1.png' />
+                <img id='terp-texture' src='./media/img/terp.png' />/>
+            </a-assets>
+            
+            <a-text value='13:45' position='0 6.5 -4' align='center' material='color: white;' font='monoid' width='12'></a-text>
+            <a-text id='cARd-ar-title' geometry='primitive: plane; width: 11; height: 2;' value='Patrice-Morgan Ongoly' position='0 8 -4' align='center' material='color: white; side: double; transparent: true; opacity: 0;' color='white' font='monoid' width='20'></a-text>
+            
+            <a-sphere id='globe-model' material='src: #earth-texture;' radius='3' position='0 3.5 -4' rotation='-90 90 0' visible='false'>
+                <a-animation attribute='rotation' easing='linear' dur='10000' from='23 0 0' to='23 360 0' repeat='indefinite' begin='start-rotating' end='stop-rotating'>
+                </a-animation>
+            </a-sphere>
+            
+            <a-obj-model id='user-model' src='#pamo-model' position='0 2.5 -4' scale='8 8 8' rotation='-90 90 0' visible='true'></a-obj-model>
+            
+            <a-entity id='center-call-icon' geometry='primitive: circle; radius: 2;' position='0 2.5 -4' material='src: #call-texture;' visible='false'></a-entity>
+            
+            <a-entity id='center-media-icon' geometry='primitive: plane; width: 4; height: 3;' position='0 2.5 -4' material='src: #media-texture;' visible='false'></a-entity>
+
+            <!--<a-sphere material='src: #earth-texture;' position="0 1.attribute='radius'              <!--<a-animation attribute='rotation' easing='linear' dur='10000' from='23 0 0' to='23 360 0' repeat='indefinite'></a-animation>-->
+            <!--</a-sphere>-->
+                    
+            <a-sphere id='linkedin-button' material='src: #linkedin-texture;' position="-6 0 -4" rotation='0 -45 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='linkedin-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-linkedin'></a-animation>
+                
+                <a-animation id='linkedin-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-linkedin'></a-animation>
+                
+                <a-animation id='linkedin-animation' attribute='position' begin='bounce-linkedin' end='kill-linkedin' dur='1000' direction='alternate' from='-6 0 -4' to='-6 0.5 -4' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='linkedin-button-label' value='LinkedIn' position='-6 0 -3' align='center' material='color: white;' font='monoid' width='10'></a-text>
+            
+            <a-sphere id='call-button'  material='src: #call-texture;' position="-3 0 -3" rotation='0 -45 0'radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='call-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-call'></a-animation>
+                
+                <a-animation id='call-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-call'></a-animation>
+                
+                <a-animation id='call-animation' attribute='position' begin='bounce-call' end='kill-call' dur='1000' direction='alternate' from='-3 0 -3' to='-3 0.5 -3' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='call-button-label' value='Call' position='-3 0 -2' align='center' material='color: white;' font='monoid' width='10'></a-text>         
+            
+            <a-sphere id='pARk-button' material='src: #pARk-texture; color: white;' position="0 0 -2" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='1.0' ></a-animation>
+                
+                <a-animation id='pARk-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-pARk'></a-animation>
+                
+                <a-animation id='pARk-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-pARk'></a-animation>
+                
+                <a-animation id='pARk-animation' attribute='position' begin='bounce-pARk' end='kill-pARk' dur='1000' direction='alternate' from='0 0 -2' to='0 0.5 -2' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='center-button-label' value='pARk' position='0 0 -1' align='center' material='color: white;' font='monoid' width='10'></a-text>
+            
+            <a-sphere id='media-button' material='src: #media-texture;' position="3 0 -3" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='media-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-media'></a-animation>
+                
+                <a-animation id='media-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-media'></a-animation>
+                
+                <a-animation id='media-animation' attribute='position' begin='bounce-media' end='kill-media' dur='1000' direction='alternate' from='3 0 -3' to='3 0.5 -3' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='media-button-label' value='media' position='3 0 -2' align='center' material='color: white;' font='monoid' width='10'></a-text>
+            
+            <a-sphere id='exposition-button' material='src: #exposition-texture;' position="6 0 -4" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='exposition-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-exposition'></a-animation>
+                
+                <a-animation id='exposition-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-exposition'></a-animation>
+                
+                <a-animation id='exposition-animation' attribute='position' begin='bounce-exposition' end='kill-exposition' dur='1000' direction='alternate' from='6 0 -4' to='6 0.5 -4' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='exposition-button-label' value='exposition' position='6 0 -3' align='center' material='color: white;' font='monoid' width='10'></a-text>
+            
+            <a-entity id='linkedin-photo' geometry='primitive: circle; radius: 2;' position='-6 4 -3' rotation='0 5 0' visible='false' material='src: #linkedin-photo-texture'>
+                <a-animation attribute='visible' to='true' dur='1000' begin='show-linkedin-photo'></a-animation>
+                <a-animation attribute='visible' to='false' dur='1000' begin='hide-linkedin-photo'></a-animation>
+            </a-entity>
+                
+            <a-text id='contact-0' value='Vaibhav Ponnuri' width='8' align='center'  position='-5 4.2 -4' rotation='0 15 0' geometry='primitive: plane; width: 4; height: 1;' color='white' material='color: white; side: double; transparent: true; opacity: 0.5;' font='monoid' visible='false'>
+                <a-animation attribute='visible' begin='show-contact-0' dur='1000' to='true'></a-animation>
+                
+                <a-animation attribute='visible' begin='hide-contact-0' dur='1000' to='false'></a-animation>
+            </a-text>
+            
+            <a-text id='contact-1' value='Beatrice Goma' width='8' align='center' position='-5 3.1 -4' rotation='0 15 0' geometry='primitive: plane; width: 4; height: 1;' color='white' material='color: white; side: double; transparent: true; opacity: 0.5;' font='monoid' visible='false'>
+                <a-animation attribute='visible' begin='show-contact-1' dur='1000' to='true'></a-animation>
+                
+                <a-animation attribute='visible' begin='hide-contact-1' dur='1000' to='false'></a-animation>
+            </a-text>
+            
+            <a-text id='contact-2' value='Emily Sprague' width='8' align='center' position='-5 2 -4' rotation='0 15 0' geometry='primitive: plane; width: 4; height: 1;' color='white' material='color: white; side: double; transparent: true; opacity: 0.5;' font='monoid' visible='false'>
+                <a-animation attribute='visible' begin='show-contact-2' dur='1000' to='true'></a-animation>
+                
+                <a-animation attribute='visible' begin='hide-contact-2' dur='1000' to='false'></a-animation>
+            </a-text>
+            
+            <a-text id='media-item-0' value='First Class' width='6' align='center'  position='0 3.5 -4' rotation='0 0 0' geometry='primitive: plane; width: 5; height: 5;' color='white' material='src: #aviation-texture; side: double; transparent: true; opacity: 0.8;' font='monoid' visible='false'>
+                <a-animation attribute='visible' begin='show-media-item-0' dur='1000' to='true'></a-animation>
+                
+                <a-animation attribute='visible' begin='hide-media-item-0' dur='1000' to='false'></a-animation>
+                
+                <a-animation attribute='position' begin='come-forward' dur='1000' to='0 3.5 -1'></a-animation>
+                <a-animation attribute='position' begin='move-backward' dur='1000' to='0 3.5 -4'></a-animation>
+                 
+                <a-animation attribute='position' begin='slide-left-0' dur='1000' to='-4 2.5 4'></a-animation>
+                <a-animation attribute='position' begin='slide-left-1' dur='1000' to='-6 2.5 4'></a-animation>
+                <a-animation attribute='position' begin='slide-right-0' dur='1000' to='-4 2.5 4'></a-animation>
+                <a-animation attribute='position' begin='slide-right-1' dur='1000' to='-2 2.5 4'></a-animation>
+                <a-animation attribute='rotation' begin='rotate-into-focus' dur='1000' to='0 0 0'></a-animation>
+                <a-animation attribute='rotation' begin='rotate-out-of-focus' dur='1000' to='0 90 0'></a-animation>
+            </a-text>
+            
+            <a-text id='media-item-1' value='Route 1' width='8' align='center' position='4 3.5 -4' rotation='0 90 0' geometry='primitive: plane; width: 5; height: 5;' color='white' material='src: #route1-texture; side: double; transparent: true; opacity: 0.5;' font='monoid' visible='false'>
+                <a-animation attribute='position' begin='come-forward' dur='1000' to='4 3.5 -1'></a-animation>
+                <a-animation attribute='position' begin='move-backward' dur='1000' to='4 3.5 -4'></a-animation>
+                
+                <a-animation attribute='visible' begin='show-media-item-1' dur='1000' to='true'></a-animation>
+                
+                <a-animation attribute='visible' begin='hide-media-item-1' dur='1000' to='false'></a-animation>
+            </a-text>
+            
+            <a-text id='media-item-2' value='The Young Terp' width='8' align='center' position='6 3.5 -4' rotation='0 90 0' geometry='primitive: plane; width: 4; height: 4;' color='white' material='src: #terp-texture; side: double; transparent: true; opacity: 0.5;' font='monoid' visible='false'>
+                <a-animation attribute='position' begin='come-forward' dur='1000' to='6 3.5 -1'></a-animation>
+                <a-animation attribute='position' begin='move-backward' dur='1000' to='6 3.5 -4'></a-animation>
+                
+                <a-animation attribute='visible' begin='show-media-item-2' dur='1000' to='true'></a-animation>
+                
+                <a-animation attribute='visible' begin='hide-media-item-2' dur='1000' to='false'></a-animation>
+            </a-text>
+            
+            <a-text id='exposition-item-0' value='documentary 1' width='6' align='center'  position='0 3.5 -4' rotation='0 0 0' font='monoid' geometry='primitive: plane; width: 5; height: 5;' color='white' material='src: #dw-docs-texture; color: white; side: double; transparent: true; opacity: 0.8;' font='monoid' visible='false'>
+                <a-animation attribute='position' begin='come-forward' dur='1000' to='0 3.5 -1'></a-animation>
+                <a-animation attribute='position' begin='move-backward' dur='1000' to='0 3.5 -4'></a-animation>
+                
+                <a-animation attribute='visible' begin='show-exposition-item-0' dur='1000' to='true'></a-animation>
+                
+                <a-animation attribute='visible' begin='hide-exposition-item-0' dur='1000' to='false'></a-animation>
+            </a-text>
+            
+            <a-text id='exposition-item-1' value='podcast 1' width='8' align='center' position='4 3.5 -4' rotation='0 90 0' font='monoid' geometry='primitive: plane; width: 4; height: 4;' color='white' material='src: #brilliant-podcast-texture; side: double; transparent: true; opacity: 0.5;' font='monoid' visible='false'>
+                <a-animation attribute='position' begin='come-forward' dur='1000' to='4 3.5 -1'></a-animation>
+                <a-animation attribute='position' begin='move-backward' dur='1000' to='4 3.5 -4'></a-animation>
+                
+                <a-animation attribute='visible' begin='show-exposition-item-1' dur='1000' to='true'></a-animation>
+                
+                <a-animation attribute='visible' begin='hide-exposition-item-1' dur='1000' to='false'></a-animation>
+            </a-text>
+            
+            <a-text id='exposition-item-2' value='the private citizen' width='12' align='center' position='6 3.5 -4' rotation='0 90 0' font='monoid' geometry='primitive: plane; width: 4; height: 4;' color='white' material='color: red; side: double; transparent: true; opacity: 0.5;' font='monoid' visible='false'>
+                <a-animation attribute='position' begin='come-forward' dur='1000' to='6 3.5 -1'></a-animation>
+                <a-animation attribute='position' begin='move-backward' dur='1000' to='6 3.5 -4'></a-animation>
+                
+                <a-animation attribute='visible' begin='show-exposition-item-2' dur='1000' to='true'></a-animation>
+                
+                <a-animation attribute='visible' begin='hide-exposition-item-2' dur='1000' to='false'></a-animation>
+            </a-text>
+            
+            
+            
+            
+            <a-text id='left-content-panel' geometry='primitive: plane; width: 5; height: 5;' position='-6 4 -3' rotation='0 35 0' value='House of Venus \n\n cARd  \n\n version 0.23.0' width='9' font='monoid' align='center' color='white' visible='true' material='color: white; side: double; transparent: true; opacity: 0.3;'></a-text>
+            
+            <a-text id='right-content-panel' geometry='primitive: plane; width: 8; height: 6;' position='6 4 -4' rotation='0 -35 0' value='CEO, Chairman \n\n House of Venus, BC \n\n UMD 2020 Mathematics \n\n @ dmv | @ paris' width='9' align='center' color='white' font='monoid' material='color: white; side: double; transparent: true; opacity: 0.3;'></a-text>
+            <!--<a-entity id='floor'
+                        geometry='primitive: plane; width: 100; height: 100;'
+                        material='src: #floor-texture; repeat: 100 100;'
+                        position='0 0 0'
+                        rotation='-90 0 0'>
+            </a-entity>-->
+            <a-entity position="0 3 6">            
+                <a-entity camera="active: true" look-controls wasd-controls></a-entity>
+            </a-entity>
+            <a-sky material='transparent: true; opacity: 0; color: white;'>
+            </a-sky>
+        </a-scene>
+    </div>
+</body>
+<<<<<<< HEAD
+</html>
+=======
+</html>
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
