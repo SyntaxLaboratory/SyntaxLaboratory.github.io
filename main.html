@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width,initial-scale=1.0' />
+    <title> cARd by HOV | v 0.8.98</title>
+    <link rel='stylesheet' type='text/css' href='./css/rfid.css' />
+    <script src='./js/jquery-3.2.1.min.js'></script>
+    <script src='./js/aframe.min.js'></script>
+    <script>
+        var sessionManager = {
+            cardContentsLoaded: false,
+            status: -1,
+            onPage: null,
+            pages: ['cARd', 'edu', 'utility'],
+            cARdMenuVisible: false,
+            eduMenuVisible: false,
+            utilityMenuVisible: false
+        };
+
+        function requestFullScreen(element) { //    makes the application fullscreen on fullscreen equipped browsers
+            var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen; // Supports most browsers and their versions.
+
+            if (requestMethod) { // Native full screen.
+                requestMethod.call(element);
+            } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+                var wscript = new ActiveXObject("WScript.Shell");
+                if (wscript !== null) {
+                    wscript.SendKeys("{F11}");
+                }
+            }
+        }
+
+        function initializeSession(data){
+            sessionManager.cardContentsLoaded = true;
+            sessionManager.status = 0;
+            sessionManager.onPage = 'edu';
+            
+            setTimeout(function(){
+                document.querySelector('#edu-button').emit('bounce-edu');
+            }, 6000);
+        }
+        
+        function gotDevices(deviceInfos) {
+            var videoSelect = document.querySelector('select#videoSource');
+            for (var i = 0; i !== deviceInfos.length; ++i) {
+                var deviceInfo = deviceInfos[i];
+                var option = document.createElement('option');
+                option.value = deviceInfo.deviceId;
+
+                if (deviceInfo.kind === 'videoinput') {
+                    option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
+                    videoSelect.appendChild(option);
+                }
+                else {
+                    console.log('Found one other kind of source/device: ', deviceInfo);
+                }
+            }
+        }
+
+        function getStream() {
+            var videoSelect = document.querySelector('select#videoSource');
+
+            if (window.stream) {
+                window.stream.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+            }
+
+            var constraints = {
+                video: {
+                    deviceId: {exact: videoSelect.value}
+                }
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleError);
+        }
+        
+        function gotStream(stream) {
+            window.stream = stream; // make stream available to console
+            video.srcObject = stream;
+            //video.play();
+        }
+
+        function handleError(error) {
+            console.log('Error: ', error);
+        }
+        
+        $(document).ready(function(){
+            initializeSession();
+
+            // FIRST STAGE
+            $('#launch-application-page').click(function(){
+
+                console.log('application launch...');
+
+                var elem = document.body;
+                requestFullScreen(elem);
+
+                $(this).animate({
+                    height: 0
+                }, 2500, function(){
+                    $('.option-button').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                    
+                    $(this).hide();
+                     var video = document.getElementById('video');
+                    var videoSelect = document.querySelector('select#videoSource');
+                    // Get access to the camera!
+                    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        // Not adding `{ audio: true }` since we only want video now
+                        navigator.mediaDevices.enumerateDevices().then(gotDevices).then(getStream).catch(handleError);
+
+                        videoSelect.onchange = getStream;
+                    }
+                });
+            });
+            
+            $('#next-option-button').click(function(){
+                if(sessionManager.status==0&&sessionManager.onPage=='edu'){
+                    sessionManager.status=0;
+                    //document.getElementById('edu-animation').setAttribute('repeat', '0');
+                    document.querySelector(`#edu-button`).emit(`kill-edu`);
+                    document.querySelector(`#edu-button`).emit(`deselect-edu`);
+                }
+                else{
+                    if(sessionManager.status==sessionManager.pages.length-1){
+                        sessionManager.status=0;
+                      //  document.getElementById('utility-animation').setAttribute('repeat', '0');
+                        document.querySelector(`#utility-button`).emit(`kill-utility`);
+                        document.querySelector(`#utility-button`).emit(`deselect-utility`);
+                    }
+                    else{
+                        sessionManager.status++;
+                    }
+                }
+                
+                if(sessionManager.status>0){
+                    var prev = sessionManager.pages[sessionManager.status-1];
+                    //document.getElementById(`${prev}-animation`).setAttribute('repeat', '0');    
+                    document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
+                    document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
+                }
+
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+                //document.getElementById(`${page}-animation`).setAttribute('repeat', 'indefinite');
+
+                document.querySelector(`#${page}-button`).emit(`select-${page}`);
+                document.querySelector(`#${page}-button`).emit(`bounce-${page}`);
+                console.log(`now on page ${page}`);
+                
+                if(sessionManager.photosInView&&page!='cARd'){
+                    for(var i=0; i<sessionManager.nameOfPIVs.length; i++){
+                        var photo = sessionManager.nameOfPIVs[i];
+                        document.querySelector(photo).emit('hide-cARd-photo');
+                    }
+                }
+                
+                if(sessionManager.utilityMenuVisible){
+                    $('#center-utility-icon').attr('visible', 'false');
+                    sessionManager.utilityMenuVisible == false;
+                }
+                
+                $('#left-content-panel').attr('visible', 'true');
+                $('#left-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                $('#user-model').attr('visible', 'true');
+                $('#center-call-icon').attr('visible', 'false');
+                $('#right-content-panel').attr('visible', 'true');
+                $('#right-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                switch(page){
+                    case 'cARd':
+                        document.querySelector('#cARd-photo').emit('show-cARd-photo');
+                        sessionManager.photosInView = true;
+                        sessionManager.nameOfPIVs = ['#cARd-photo'];
+                        
+                        $('#left-content-panel').attr('visible', 'false');
+                        
+                        $('#right-content-panel').attr('material', 'color: black; side: double; transparent: true; opacity: 0.3;');
+                        $('#right-content-panel').attr('value','Founder, CEO @ House of Venus \n\nCollege Park, MD\n\nselect to experience');
+                        $('#cARd-ar-title').attr('value', 'Patrice-Morgan Ongoly');
+                        $('#cARd-ar-title').attr('material','color: black; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'edu':
+                        $('#user-model').attr('visible', 'false');
+                        $('#center-call-icon').attr('visible', 'true');
+                        $('#right-content-panel').attr('visible','true');
+                        document.querySelector('#right-content-panel').setAttribute('geometry', 'primitive: plane; width: 6; height: 6;');
+                        $('#right-content-panel').attr('value','news updates\n\n about the city of\n\n college park');
+                        $('#right-content-panel').attr('material','color: red; side: double; transparent: true; opacity: 0.5;');
+                        
+                        $('#cARd-ar-title').attr('value', 'Univeristy of Maryland');
+                        
+                        $('#left-content-panel').attr('value','manage your life\n\n as a\n\n Terrapin');
+                        
+                        document.querySelector('#left-content-panel').setAttribute('geometry', 'primitive: plane; width: 4; height: 4;');
+                        
+                        $('#left-content-panel').attr('material', 'color: red; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#cARd-ar-title').attr('material','color: red; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'utility':
+                        $('#user-model').attr('visible', 'false');
+                        
+                        $('#center-utility-icon').attr('visible', 'true');
+                        $('#left-content-panel').attr('visible', 'true');
+                        $('#left-content-panel').attr('material', 'color: yellow; side: double; transparent: true; opacity: 0.3;');
+                        $('#left-content-panel').attr('value','customize settings\n\nconnect to wifi\n\nexplore and share files');
+                        
+                        $('#right-content-panel').attr('visible', 'false');
+                        
+                        sessionManager.utilityMenuVisible = true;
+                        
+                        $('#cARd-ar-title').attr('value', 'Utility');
+                        $('#cARd-ar-title').attr('material','color: yellow; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    default:
+                        break;
+                }
+            });
+            
+            $('#prev-option-button').click(function(){
+                if(sessionManager.status==0&&sessionManager.onPage=='edu'){
+                    sessionManager.status=sessionManager.pages.length-1;
+                    document.querySelector(`#edu-button`).emit(`kill-edu`);
+                    document.querySelector(`#edu-button`).emit(`deselect-edu`);
+                }
+                else{
+                    if(sessionManager.status==0){
+                        sessionManager.status=sessionManager.pages.length-1;
+                        document.querySelector(`#cARd-button`).emit(`kill-cARd`);
+                        document.querySelector(`#cARd-button`).emit(`deselect-cARd`);
+                    }
+                    else{
+                        sessionManager.status--;
+                    }
+                }
+                
+                if(sessionManager.status<sessionManager.pages.length-1){
+                    var prev = sessionManager.pages[sessionManager.status+1];
+                    document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
+                    document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
+                }
+
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+                
+                document.querySelector(`#${page}-button`).emit(`select-${page}`);
+                document.querySelector(`#${page}-button`).emit(`bounce-${page}`);
+                console.log(`now on page ${page}`);
+                
+                if(sessionManager.photosInView&&page!='cARd'){
+                    for(var i=0; i<sessionManager.nameOfPIVs.length; i++){
+                        var photo = sessionManager.nameOfPIVs[i];
+                        document.querySelector(photo).emit('hide-cARd-photo');
+                    }
+                }
+                
+                if(sessionManager.utilityMenuVisible){
+                    $('#center-utility-icon').attr('visible', 'false');
+                    sessionManager.utilityMenuVisible == false;
+                }
+                
+                $('#left-content-panel').attr('visible', 'true');
+                $('#left-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                $('#right-content-panel').attr('visible', 'true');
+                $('#right-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                $('#user-model').attr('visible', 'true');
+                $('#center-call-icon').attr('visible', 'false');
+                
+                switch(page){
+                    case 'cARd':
+                        $('#left-content-panel').attr('visible', 'false');
+                        
+                        document.querySelector('#cARd-photo').emit('show-cARd-photo');
+                        sessionManager.photosInView = true;
+                        sessionManager.nameOfPIVs = ['#cARd-photo'];
+                        
+                        $('#right-content-panel').attr('align', 'center');
+                        
+                        $('#right-content-panel').attr('value','Founder, CEO @ House of Venus \n\nCollege Park, MD\n\nselect to launch');
+                        $('#right-content-panel').attr('material', 'color: black; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#cARd-ar-title').attr('value', 'Patrice-Morgan Ongoly');
+                        $('#cARd-ar-title').attr('material','color: black; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'edu':
+                        $('#user-model').attr('visible', 'false');
+                        $('#center-call-icon').attr('visible', 'true');
+                        
+                        $('#right-content-panel').attr('visible','true');
+                        document.querySelector('#right-content-panel').setAttribute('geometry', 'primitive: plane; width: 6; height: 6;');
+                        $('#right-content-panel').attr('value','news updates\n\n about the city of\n\n college park');
+                        $('#right-content-panel').attr('material','color: red; side: double; transparent: true; opacity: 0.5;');
+                        
+                        $('#cARd-ar-title').attr('value', 'Univeristy of Maryland');
+                        
+                        $('#left-content-panel').attr('value','manage your life \n\nas a\n\nTerrapin');
+                        document.querySelector('#left-content-panel').setAttribute('geometry', 'primitive: plane; width: 4; height: 4;');
+                        $('#left-content-panel').attr('material', 'color: red; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#cARd-ar-title').attr('material','color: red; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    case 'utility':
+                        $('#user-model').attr('visible', 'false');
+                        
+                        $('#center-utility-icon').attr('visible', 'true');
+                        
+                        $('#left-content-panel').attr('visible', 'true');
+                        $('#left-content-panel').attr('material', 'color: yellow; side: double; transparent: true; opacity: 0.3;');
+                        $('#left-content-panel').attr('value','customize settings\n\nconnect to wifi\n\nexplore and share files');
+                        
+                        $('#right-content-panel').attr('visible', 'false');
+                        $('#cARd-ar-title').attr('value', 'Utility');
+                       
+                        sessionManager.utilityMenuVisible = true;
+                        $('#cARd-ar-title').attr('material','color: yellow; side: double; transparent: true; opacity: 0.5;');
+                        break;
+                    default:
+                        break;
+                }
+            });
+            
+            $('#select-option-button').click(function(){
+                var page = sessionManager.pages[sessionManager.status] || 'edu';
+                console.log(`selected page ${page}`);
+                
+                switch(page){
+                    case 'cARd':
+                        $('#cARd-photo').attr('visible', 'false');
+                        $('#right-content-panel').attr('visible', 'false');
+                        $('#user-model').attr('visible', 'false');
+                        $('#cARd-ar-title').attr('visible','false');
+                        
+                        setTimeout(function(){
+                            window.location.href = './cARd'
+                        }, 1000);
+                        
+                      //  window.location.href = 'https://www.cARd.com/in/patrice-morgan-ongoly-1a206b74/'
+                        break; 
+                    case 'edu':
+                        $('#center-call-icon').attr('visible', 'false');
+                        $('#right-content-panel').attr('visible', 'false');
+                        $('#user-model').attr('visible', 'false');
+                        $('#cARd-ar-title').attr('visible','false');
+                        
+                        setTimeout(function(){
+                            window.location.href = './edu'
+                        }, 1000);
+                    //    window.location.href = 'http://houseofven.us/edu'
+                        break;
+                    case 'utility':
+                        $('#center-utility-icon').attr('visible', 'false');
+                        $('#right-content-panel').attr('visible', 'false');
+                        $('#user-model').attr('visible', 'false');
+                        $('#cARd-ar-title').attr('visible','false');
+                        
+                        setTimeout(function(){
+                            window.location.href = './utility'
+                        }, 1000);
+                      //  window.location.href = 'https://www.utility.com/houseofven.us'
+                        break;
+                    default:
+                        break;
+                }
+            });
+            
+        });
+    </script>
+</head>
+<body>
+    <div id='launch-application-page' class='entry-layer overlay'>
+        <div id='instructions'>
+            tap anywhere
+            <div id='logo'></div>
+            to view cARd
+        </div>
+    </div>
+    <!-- FOR PRODUCTION PURPOSES ONLY-->
+    <select id='videoSource'></select>
+    <input id='select-option-button' class='option-button' type='button' value='o' />
+    <input id='prev-option-button' class='option-button' type='button' value='<' />
+    <input id='next-option-button' class='option-button' type='button' value='>' />
+    
+    <video id="video" autoplay></video>
+    <div id='main-app-container' class='viewer-layer'>
+        <a-scene embedded id='rfid-experience-container'>
+            <a-assets>
+                <a-asset-item id='mj-model' src='./media/model/ongoly.obj'></a-asset-item>
+                <img id='floor-texture' src='./media/texture/grid_pattern.png' preload='true' />
+                <img id='earth-texture' src='./media/texture/earthmap1k.jpg' preload='true' />
+                
+                <img id='earth-texture' src='./media/texture/earthmap1k.jpg' preload='true' />
+                <img id='cARd-texture' src='./media/img/card-icon.png'/>
+                <img id='edu-texture' src='./media/img/maryland.png' />
+                <img id='utility-texture' src='./media/img/utility.png'/>
+                <img id='cARd-photo-texture' src='./media/texture/cARd.png' />
+            </a-assets>
+            
+            
+            
+            <a-text value='13:45' position='0 6.5 -4' align='center' material='color: white;' width='12'></a-text><!-- font='monoid' -->
+            
+            <a-text id='cARd-ar-title' geometry='primitive: plane; width: 11; height: 2;' value='creative Augmented Reality desktop' position='0 8 -4' align='center' material='color: white; side: double; transparent: true; opacity: 0;' color='white' width='20'></a-text><!-- font='monoid' -->
+    
+            <a-obj-model id='user-model' src='#mj-model' position='0 2.5 -4' scale='8 8 8' rotation='-90 90 0' visible='false'></a-obj-model>
+            
+            <a-entity id='center-call-icon' geometry='primitive: circle; radius: 3;' position='0 2.5 -5' material='src: #edu-texture;' visible='true'></a-entity>
+
+            <a-entity id='center-utility-icon' geometry='primitive: circle; radius: 3;' position='0 2.5 -5' material='src: #utility-texture; color: white;' visible='false'></a-entity>
+            
+            <a-sphere id='cARd-button' material='src: #cARd-texture;' position="-6 0 -4" rotation='0 -45 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='cARd-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-cARd'></a-animation>
+                
+                <a-animation id='cARd-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-cARd'></a-animation>
+                
+                <a-animation id='cARd-animation' attribute='position' begin='bounce-cARd' end='kill-cARd' dur='1000' direction='alternate' from='-6 0 -4' to='-6 0.5 -4' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text value='cARd' position='-6 0 -3' align='center' material='color: white;' width='10'></a-text><!-- font='monoid' -->
+            
+            <a-sphere id='edu-button' material='src: #edu-texture; color: white;' position="0 0 -2" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='1.0' ></a-animation>
+                
+                <a-animation id='edu-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-edu'></a-animation>
+                
+                <a-animation id='edu-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-edu'></a-animation>
+                
+                <a-animation id='edu-animation' attribute='position' begin='bounce-edu' end='kill-edu' dur='1000' direction='alternate' from='0 0 -2' to='0 0.5 -2' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='center-button-label' value='edu' position='0 0 -1' align='center' material='color: white;' width='10'></a-text><!-- font='monoid' -->
+    
+            <a-sphere id='utility-button' material='src: #utility-texture;' position="6 0 -4" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='utility-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-utility'></a-animation>
+                
+                <a-animation id='utility-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-utility'></a-animation>
+                
+                <a-animation id='utility-animation' attribute='position' begin='bounce-utility' end='kill-utility' dur='1000' direction='alternate' from='6 0 -4' to='6 0.5 -4' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text value='utility' position='6 0 -3' align='center' material='color: white;' width='10'></a-text><!-- font='monoid' -->
+            
+            <a-entity id='cARd-photo' geometry='primitive: circle; radius: 2;' position='-6 4 -3' rotation='0 5 0' visible='false' material='src: #cARd-photo-texture'>
+                <a-animation attribute='visible' to='true' dur='1000' begin='show-cARd-photo'></a-animation>
+                <a-animation attribute='visible' to='false' dur='1000' begin='hide-cARd-photo'></a-animation>
+            </a-entity>           
+            
+            <a-text id='left-content-panel' geometry='primitive: plane; width: 5; height: 5;' position='-6 4 -3' rotation='0 35 0' value='House of Venus \n\n cARd \n\nversion 0.8.80' width='9' align='center' color='white' visible='true' material='color: white; side: double; transparent: true; opacity: 0.3;'></a-text><!-- font='monoid' -->
+            
+            <a-text id='right-content-panel' geometry='primitive: plane; width: 8; height: 6;' position='6 4 -3' rotation='0 -35 0' value='Welcome! \n\n (cARd) view  contents \n\n (edu) manage student life \n\n (util) connect to wifi, use remotes' width='9' align='center' color='white'  material='color: white; side: double; transparent: true; opacity: 0.3;'>
+            </a-text> <!-- font='monoid' -->
+
+            <a-entity position="0 3 6">            
+                <a-entity camera="active: true" look-controls wasd-controls></a-entity>
+            </a-entity>
+            <a-sky material='transparent: true; opacity: 0; color: white;'>
+            </a-sky>
+        </a-scene>
+    </div>
+</body>
+</html>

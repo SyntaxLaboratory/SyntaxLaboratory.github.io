@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width,initial-scale=1.0' />
+    <title>cARd (blank) | v 0.5.2</title>
+    <link rel='stylesheet' type='text/css' href='../css/rfid.css' />
+    <script src='../js/jquery-3.2.1.min.js'></script>
+    <script src='../js/aframe.min.js'></script>
+    <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+    <script>
+        var sessionManager;
+
+        function requestFullScreen(element) { //    makes the application fullscreen on fullscreen equipped browsers
+            var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen; // Supports most browsers and their versions.
+
+            if (requestMethod) { // Native full screen.
+                requestMethod.call(element);
+            } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+                var wscript = new ActiveXObject("WScript.Shell");
+                if (wscript !== null) {
+                    wscript.SendKeys("{F11}");
+                }
+            }
+        }
+
+        function initializeSession(data){
+            sessionManager = {
+                cardContentsLoaded: false,
+                status: -1,
+                onPage: null,
+                pages: ['sphere', 'cube', 'pARk', 'model', 'brush'],
+                addressBookVisible: false
+            };
+        }
+        
+        function gotDevices(deviceInfos) {
+            var videoSelect = document.querySelector('select#videoSource');
+            for (var i = 0; i !== deviceInfos.length; ++i) {
+                var deviceInfo = deviceInfos[i];
+                var option = document.createElement('option');
+                option.value = deviceInfo.deviceId;
+
+                if (deviceInfo.kind === 'videoinput') {
+                    option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
+                    videoSelect.appendChild(option);
+                }
+                else {
+                    console.log('Found one other kind of source/device: ', deviceInfo);
+                }
+            }
+        }
+
+        function getStream() {
+            var videoSelect = document.querySelector('select#videoSource');
+
+            if (window.stream) {
+                window.stream.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+            }
+
+            var constraints = {
+                video: {
+                    deviceId: {exact: videoSelect.value}
+                }
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleError);
+        }
+        
+        function gotStream(stream) {
+            window.stream = stream; // make stream available to console
+            video.srcObject = stream;
+            //video.play();
+        }
+
+        function handleError(error) {
+            console.log('Error: ', error);
+        }
+        
+        $(document).ready(function(){
+            initializeSession();
+
+            // FIRST STAGE
+            $('#launch-application-page').click(function(){
+
+                console.log('application launch...');
+                
+                $('.experience-button').show().animate({
+                    opacity: 1.0
+                }, 1000);
+                
+                var elem = document.body;
+                requestFullScreen(elem);
+
+                $(this).animate({
+                    height: 0
+                }, 2500, function(){
+                    $(this).hide();
+                     var video = document.getElementById('video');
+                    var videoSelect = document.querySelector('select#videoSource');
+                    // Get access to the camera!
+                    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        // Not adding `{ audio: true }` since we only want video now
+                        navigator.mediaDevices.enumerateDevices().then(gotDevices).then(getStream).catch(handleError);
+
+                        videoSelect.onchange = getStream;
+                    }
+                });
+            });
+            
+            function hideMainMenu(){
+                setTimeout(function(){
+                    document.querySelector('#globe-button').emit('stop-rotating');
+                }, 500);
+                
+                setTimeout(function(){
+                    document.querySelector('#moon').emit('hide-moon');
+                }, 500);
+                
+                setTimeout(function(){
+                    document.querySelector('#load-button').emit('hide-load-button');
+                }, 1500);            
+                
+                setTimeout(function(){
+                    document.querySelector('#globe').emit('hide-globe');
+                }, 2500)
+                
+                setTimeout(function(){
+                    document.querySelector('#new-button').emit('hide-new-button');
+                }, 3000);
+            }
+            
+            $('#new-experience-button').click(function(){
+                sessionManager.cardContentsLoaded = true;
+                sessionManager.status = 0;
+                sessionManager.onPage = 'pARk';
+                
+                document.querySelector('#new-button').emit('select-new-button');
+                
+                hideMainMenu();
+                setTimeout(function(){
+                    document.querySelector('#clock-container').emit('hide-header');
+                    document.querySelector('#location-container').emit('hide-header');
+                    
+                    document.querySelector('#sphere-button').emit('reveal-tool');
+                    document.querySelector('#cube-button').emit('reveal-tool');
+                    document.querySelector('#pARk-button').emit('reveal-tool');
+                    document.querySelector('#model-button').emit('reveal-tool');
+                    document.querySelector('#brush-button').emit('reveal-tool');
+                }, 5000);
+                
+                setTimeout(function(){
+                    document.querySelector('#postAR-info-panel').emit('reveal-info-panel')
+                    document.querySelector('#sphere-button-label').emit('reveal-tool-label');
+                    document.querySelector('#cube-button-label').emit('reveal-tool-label');
+                    document.querySelector('#pARk-button-label').emit('reveal-tool-label');
+                    document.querySelector('#model-button-label').emit('reveal-tool-label');
+                    document.querySelector('#brush-button-label').emit('reveal-tool-label');
+                }, 6500);
+            })
+            
+            $('#load-experience-button').click(function(){
+                document.querySelector('#load-button').emit('select-load-button');
+                
+                hideMainMenu();
+            });
+            
+             
+            $('#next-tool-button').click(function(){
+                if(sessionManager.status==0&&sessionManager.onPage=='pARk'){
+                    sessionManager.status=0;
+                    //document.getElementById('pARk-animation').setAttribute('repeat', '0');
+                    document.querySelector(`#pARk-button`).emit(`kill-pARk`);
+                    document.querySelector(`#pARk-button`).emit(`deselect-pARk`);
+                }
+                else{
+                    if(sessionManager.status==sessionManager.pages.length-1){
+                        sessionManager.status=0;
+                      //  document.getElementById('brush-animation').setAttribute('repeat', '0');
+                        document.querySelector(`#brush-button`).emit(`kill-brush`);
+                        document.querySelector(`#brush-button`).emit(`deselect-brush`);
+                    }
+                    else{
+                        sessionManager.status++;
+                    }
+                }
+                
+                if(sessionManager.status>0){
+                    var prev = sessionManager.pages[sessionManager.status-1];
+                    //document.getElementById(`${prev}-animation`).setAttribute('repeat', '0');    
+                    document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
+                    document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
+                }
+
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+                //document.getElementById(`${page}-animation`).setAttribute('repeat', 'indefinite');
+                if(sessionManager.addressBookVisible==true){
+                    document.querySelector('#contact-0').emit('hide-contact-0');
+                    document.querySelector('#contact-1').emit('hide-contact-1');
+                    document.querySelector('#contact-2').emit('hide-contact-2');
+                    sessionManager.addressBookVisible=false;
+                }
+                
+                document.querySelector(`#${page}-button`).emit(`select-${page}`);
+                document.querySelector(`#${page}-button`).emit(`bounce-${page}`);
+                console.log(`now on page ${page}`);
+                
+                switch(page){
+                    case 'sphere':
+                        $('#left-content-panel').attr('value','sphere Photo');
+                        $('#right-content-panel').attr('align', 'left');
+                        $('#right-content-panel').attr('value','CEO, Chairman @ House of Venus \n\n  UMD 2020 B.S. Mathematics \n\n current: \n democratizing the web \n with the power of network AR \n\n past: \n * startup shell \n * lab of cognition and emotion \n * subiaul lab');
+                        $('#cARd-ar-title').attr('value', 'Patrice-Morgan Ongoly');
+                        break;
+                    case 'cube':
+                        $('#left-content-panel').attr('value','cube Profile Information');
+                        $('#cARd-ar-title').attr('value', 'CONTACTS');
+                        $('#right-content-panel').attr('align', 'left');                        
+                        $('#right-content-panel').attr('value','');
+                        document.querySelector('#contact-0').emit('show-contact-0');
+                        document.querySelector('#contact-1').emit('show-contact-1');
+                        document.querySelector('#contact-2').emit('show-contact-2');
+                        sessionManager.addressBookVisible = true;
+                        break;
+                    case 'pARk':
+                        $('#left-content-panel').attr('value','House of Venus \n\n cARd  \n\n version 0.8.24');
+                        $('#cARd-ar-title').attr('value', 'COLLEGE PARK');
+                        
+                        $('#right-content-panel').attr('value','Patrice-Morgan Ongoly\n\n CEO | House of Venus \n\n UMD 2020 Mathematics \n\n @ dmv | @ paris');
+                        break;
+                    case 'model':
+                        $('#left-content-panel').attr('value','model Content');
+                        $('#cARd-ar-title').attr('value', 'model');
+                        $('#right-content-panel').attr('value', '');
+                        break;
+                    case 'brush':
+                        $('#left-content-panel').attr('value','brush Content');
+                        $('#cARd-ar-title').attr('value', 'brush');
+                        $('#right-content-panel').attr('value', '');
+                        break;
+                    default:
+                        break;
+                }
+            });
+            
+            $('#prev-tool-button').click(function(){
+                if(sessionManager.status==0&&sessionManager.onPage=='pARk'){
+                    sessionManager.status=sessionManager.pages.length-1;
+                    //document.getElementById('pARk-animation').setAttribute('repeat', '0');
+                    document.querySelector(`#pARk-button`).emit(`kill-pARk`);
+                    document.querySelector(`#pARk-button`).emit(`deselect-pARk`);
+                }
+                else{
+                    if(sessionManager.status==0){
+                        sessionManager.status=sessionManager.pages.length-1;
+                      //  document.getElementById('brush-animation').setAttribute('repeat', '0');
+                        document.querySelector(`#sphere-button`).emit(`kill-sphere`);
+                        document.querySelector(`#sphere-button`).emit(`deselect-sphere`);
+                    }
+                    else{
+                        sessionManager.status--;
+                    }
+                }
+                
+                if(sessionManager.status<sessionManager.pages.length-1){
+                    var prev = sessionManager.pages[sessionManager.status+1];
+                    //document.getElementById(`${prev}-animation`).setAttribute('repeat', '0');    
+                    document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
+                    document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
+                }
+
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+                //document.getElementById(`${page}-animation`).setAttribute('repeat', 'indefinite');
+                
+                if(sessionManager.addressBookVisible==true){
+                    document.querySelector('#contact-0').emit('hide-contact-0');
+                    document.querySelector('#contact-1').emit('hide-contact-1');
+                    document.querySelector('#contact-2').emit('hide-contact-2');
+                    sessionManager.addressBookVisible=false;
+                }
+                
+                document.querySelector(`#${page}-button`).emit(`select-${page}`);
+                document.querySelector(`#${page}-button`).emit(`bounce-${page}`);
+                console.log(`now on page ${page}`);
+                
+                switch(page){
+                    case 'sphere':
+                        $('#left-content-panel').attr('value','sphere Photo');
+                        $('#right-content-panel').attr('align', 'left');
+                        $('#right-content-panel').attr('value','CEO, Chairman @ House of Venus \n\n  UMD 2020 B.S. Mathematics \n\n current: \n democratizing the web \n with the power of network AR \n\n past: \n * startup shell \n * lab of cognition and emotion \n * subiaul lab');
+                        $('#cARd-ar-title').attr('value', 'Patrice-Morgan Ongoly');
+                        break;
+                    case 'cube':
+                        $('#left-content-panel').attr('value','cube Profile Information');
+                        $('#cARd-ar-title').attr('value', 'CONTACTS');
+                        $('#right-content-panel').attr('align', 'left');
+                        $('#right-content-panel').attr('value','');
+                        document.querySelector('#contact-0').emit('show-contact-0');
+                        document.querySelector('#contact-1').emit('show-contact-1');
+                        document.querySelector('#contact-2').emit('show-contact-2');
+                        sessionManager.addressBookVisible = true;
+                        break;
+                    case 'pARk':
+                        $('#left-content-panel').attr('value','House of Venus \n\n cARd  \n\n version 0.8.24');
+                        $('#cARd-ar-title').attr('value', 'COLLEGE PARK');
+                        
+                        $('#right-content-panel').attr('value','Patrice-Morgan Ongoly\n\n CEO | House of Venus \n\n UMD 2020 Mathematics \n\n @ dmv | @ paris');
+                        break;
+                    case 'model':
+                        $('#left-content-panel').attr('value','model Content');
+                        $('#cARd-ar-title').attr('value', 'model');
+                        $('#right-content-panel').attr('value', '');
+                        break;
+                    case 'brush':
+                        $('#left-content-panel').attr('value','brush Content');
+                        $('#cARd-ar-title').attr('value', 'brush');
+                        $('#right-content-panel').attr('value', '');
+                        break;
+                    default:
+                        break;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id='launch-application-page' class='entry-layer overlay'>
+        <div id='instructions'>
+            tap anywhere
+            <div id='logo'></div>
+            to launch app
+        </div>
+    </div>
+    <!-- FOR PRODUCTION PURPOSES ONLY-->
+    <select id='videoSource'></select>
+    <video id="video" autoplay></video>
+    <input id='new-experience-button' class='experience-button' type='button' value='new' />
+    <input id='load-experience-button' class='experience-button' type='button' value='load' />
+    <input id='prev-tool-button' class='experience-button' type='button' value='<' />
+    <input id='next-tool-button' class='experience-button' type='button' value='>' />
+    
+    <div id='main-app-container' class='viewer-layer'>
+        <a-scene embedded id='rfid-experience-container'>
+            <a-assets>
+                <img id='floor-texture' src='./media/texture/grid_pattern.png' preload='true' />
+                <img id='earth-texture' src='./media/texture/earthmap1k.jpg' preload='true' />
+                <img id='brush-texture' src='./media/img/brush-icon.png'/>
+                <img id='landmark-texture' src='./media/img/landmark.png'/>
+                <img id='model-texture' src='./media/img/hand-icon.png'/>
+                <img id='pARk-texture' src='./media/texture/globe-texture.png'/>
+            </a-assets>
+            
+            
+            <a-text id='clock-container' value='13:45' position='0 4 0' align='center' material='color: white;' font='monoid' width='10'>
+                <a-animation attribute='visible' to='false' dur='2000' begin='hide-header'></a-animation>
+            </a-text>
+            <a-text id='location-container' value='COLLEGE PARK' position='0 3.3 0' align='center' material='color: white;' font='monoid' width='6'>
+                <a-animation attribute='visible' to='false' dur='2000' begin='hide-header'></a-animation>
+            </a-text>
+            
+            <a-sphere id='globe' material='src: #earth-texture;' position="0 1.5 -2" radius="2">
+                <a-animation attribute='rotation' easing='linear' dur='10000' from='23 0 0' to='23 360 0' repeat='indefinite' end='stop-rotating'></a-animation>
+                <a-animation attribute='visible' to='false' dur='2000' begin='hide-globe'></a-animation>
+            </a-sphere>
+                    
+            <a-sphere id='moon' visible='false' color="white" position="3 2 -2" radius="0.5">
+                <a-animation attribute='visible' to='true' dur='2000' begin='show-moon'></a-animation>
+            </a-sphere>
+            
+            <a-entity id='new-button' geometry='primitive: plane; width: 1.5; height: 0.5;' position='-2 0 0' text='value: new; width: 4; align: center; color: white;' material='color: black;'>
+                <a-animation attribute='material.color' from='black' to='white' dur='1000' begin='select-new-button'></a-animation>
+                <a-animation attribute='visible' to='false' dur='2000' begin='hide-new-button'></a-animation>
+            </a-entity>
+            
+            <a-entity id='load-button' geometry='primitive: plane; width: 1.5; height: 0.5;' position='2 0 0'  text='value: load; width: 4; align: center; color: white;' material='color: black;'>
+                <a-animation attribute='material.color' from='black' to='white' dur='1000' begin='select-load-button'></a-animation>
+                <a-animation attribute='visible' to='false' dur='2000' begin='hide-load-button'></a-animation>
+            </a-entity>        
+            
+            
+            
+            
+            <a-text visible='false' id='cARd-ar-title' value='Patrice-Morgan Ongoly' position='0 6 -4' align='center' material='color: white;' font='monoid' width='16'></a-text>
+                        
+            <a-entity visible='false' id='postAR-info-panel' font='monoid' text='value: post.AR \n\n House of Venus\nBenefit Corporation (c) \n\n v. 0.8.12; align: center; color: white; width: 10;' geometry='primitive: plane; width: 7; height: 7;' material='color: black;' position='0 3 -3' rotation='0 0 0'>
+                <a-animation attribute='visible' to='true' begin='reveal-info-panel' dur='2500'></a-animation>
+            </a-entity>
+            
+                    
+            <a-sphere visible='false' id='sphere-button' color='red' position="-6 0 -4" rotation='0 -45 0' radius="0.75">
+                <a-animation attribute='visible' to='true' begin='reveal-tool' dur='2000'></a-animation>
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='sphere-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-sphere'></a-animation>
+                
+                <a-animation id='sphere-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-sphere'></a-animation>
+                
+                <a-animation id='sphere-animation' attribute='position' begin='bounce-sphere' end='kill-sphere' dur='1000' direction='alternate' from='-6 0 -4' to='-6 0.5 -4' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='sphere-button-label' visible='false' visible='false' value='shapes' position='-6 0 -3' align='center' material='color: white;' font='monoid' width='10'>
+                <a-animation attribute='visible' to='true' begin='reveal-tool-label' dur='2000'></a-animation>
+            </a-text>
+            
+            
+            <a-sphere visible='false' id='cube-button' material='src: #landmark-icon;' color='yellow' position="-3 0 -3" rotation='0 -45 0' radius="0.75">
+                <a-animation attribute='visible' to='true' begin='reveal-tool' dur='2000'></a-animation>
+                
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='cube-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-cube'></a-animation>
+                
+                <a-animation id='cube-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-cube'></a-animation>
+                
+                <a-animation id='cube-animation' attribute='position' begin='bounce-cube' end='kill-cube' dur='1000' direction='alternate' from='-3 0 -3' to='-3 0.5 -3' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='cube-button-label' visible='false' value='recognizer' position='-3 0 -2' align='center' material='color: white;' font='monoid' width='10'>
+                <a-animation attribute='visible' to='true' begin='reveal-tool-label' dur='2000'></a-animation>
+            </a-text>         
+            
+            <a-sphere visible='false' id='pARk-button' material='src: #pARk-texture; color: white;' position="0 0 -2" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='visible' to='true' begin='reveal-tool' dur='2000'></a-animation>
+                
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='1.0' ></a-animation>
+                
+                <a-animation id='pARk-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-pARk'></a-animation>
+                
+                <a-animation id='pARk-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-pARk'></a-animation>
+                
+                <a-animation id='pARk-animation' attribute='position' begin='bounce-pARk' end='kill-pARk' dur='1000' direction='alternate' from='0 0 -2' to='0 0.5 -2' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='pARk-button-label' visible='false' value='pARk' position='0 0 -1' align='center' material='color: white;' font='monoid' width='10'>
+                <a-animation attribute='visible' to='true' begin='reveal-tool-label' dur='2000'></a-animation>
+            </a-text>
+            
+            
+            <a-sphere visible='false' id='model-button' color='blue' material='src: #model-texture;' position="3 0 -3" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='visible' to='true' begin='reveal-tool' dur='2000'></a-animation>
+                
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='model-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-model'></a-animation>
+                
+                <a-animation id='model-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-model'></a-animation>
+                
+                <a-animation id='model-animation' attribute='position' begin='bounce-model' end='kill-model' dur='1000' direction='alternate' from='3 0 -3' to='3 0.5 -3' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='model-button-label' visible='false' value='model' position='3 0 -2' align='center' material='color: white;' font='monoid' width='10'>
+                <a-animation attribute='visible' to='true' begin='reveal-tool-label' dur='2000'></a-animation>
+            </a-text>
+            
+            <a-sphere visible='false' id='brush-button' material='src: #brush-texture;' color='green' position="6 0 -4" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='visible' to='true' begin='reveal-tool' dur='2000'></a-animation>
+                
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='brush-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-brush'></a-animation>
+                
+                <a-animation id='brush-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-brush'></a-animation>
+                
+                <a-animation id='brush-animation' attribute='position' begin='bounce-brush' end='kill-brush' dur='1000' direction='alternate' from='6 0 -4' to='6 0.5 -4' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='brush-button-label' visible='false' value='brush' position='6 0 -3' align='center' material='color: white;' font='monoid' width='10'>
+                <a-animation attribute='visible' to='true' begin='reveal-tool-label' dur='2000'></a-animation>
+            </a-text>
+            
+            
+            
+            
+            
+            <!--<a-entity id='floor'
+                        geometry='primitive: plane; width: 100; height: 100;'
+                        material='src: #floor-texture; repeat: 100 100;'
+                        position='0 0 0'
+                        rotation='-90 0 0'>
+            </a-entity>-->
+            <a-entity position="0 1.5 3">            
+                <a-entity camera="active: true" look-controls wasd-controls></a-entity>
+            </a-entity>
+            <a-sky material='transparent: true; opacity: 0; color: white;'>
+            </a-sky>
+        </a-scene>
+    </div>
+</body>
+</html>

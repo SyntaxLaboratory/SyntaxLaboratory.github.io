@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width,initial-scale=1.0' />
+    <title> utility | cARd by HOV | v 0.9.0</title>
+    <link rel='stylesheet' type='text/css' href='./css/rfid.css' />
+    <script src='./js/jquery-3.2.1.min.js'></script>
+    <script src='./js/aframe.min.js'></script>
+    <script>
+        var sessionManager = {
+            wifiContentsLoaded: false,
+            status: -1,
+            onPage: null,
+            pages: ['wifi', 'remote', 'portfolio'],
+            wifiMenuVisible: false,
+            remoteMenuVisible: false,
+            portfolioMenuVisible: false
+        };
+
+        function requestFullScreen(element) { //    makes the application fullscreen on fullscreen equipped browsers
+            var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen; // Supports most browsers and their versions.
+
+            if (requestMethod) { // Native full screen.
+                requestMethod.call(element);
+            } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+                var wscript = new ActiveXObject("WScript.Shell");
+                if (wscript !== null) {
+                    wscript.SendKeys("{F11}");
+                }
+            }
+        }
+
+        function initializeSession(data){
+            sessionManager.wifiContentsLoaded = true;
+            sessionManager.status = 0;
+            sessionManager.onPage = 'remote';
+            
+            setTimeout(function(){
+                document.querySelector('#remote-button').emit('bounce-remote');
+            }, 6000);
+        }
+        
+        function gotDevices(deviceInfos) {
+            var videoSelect = document.querySelector('select#videoSource');
+            for (var i = 0; i !== deviceInfos.length; ++i) {
+                var deviceInfo = deviceInfos[i];
+                var option = document.createElement('option');
+                option.value = deviceInfo.deviceId;
+
+                if (deviceInfo.kind === 'videoinput') {
+                    option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
+                    videoSelect.appendChild(option);
+                }
+                else {
+                    console.log('Found one other kind of source/device: ', deviceInfo);
+                }
+            }
+        }
+
+        function getStream() {
+            var videoSelect = document.querySelector('select#videoSource');
+
+            if (window.stream) {
+                window.stream.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+            }
+
+            var constraints = {
+                video: {
+                    deviceId: {exact: videoSelect.value}
+                }
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleError);
+        }
+        
+        function gotStream(stream) {
+            window.stream = stream; // make stream available to console
+            video.srcObject = stream;
+            //video.play();
+        }
+
+        function handleError(error) {
+            console.log('Error: ', error);
+        }
+        
+        $(document).ready(function(){
+            initializeSession();
+
+            // FIRST STAGE
+            $('#launch-application-page').click(function(){
+
+                console.log('application launch...');
+
+                var elem = document.body;
+                requestFullScreen(elem);
+
+                $(this).animate({
+                    height: 0
+                }, 2500, function(){
+                    $('.option-button').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                    
+                    $(this).hide();
+                    var video = document.getElementById('video');
+                    var videoSelect = document.querySelector('select#videoSource');
+                    // Get access to the camera!
+                    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        // Not adding `{ audio: true }` since we only want video now
+                        navigator.mediaDevices.enumerateDevices().then(gotDevices).then(getStream).catch(handleError);
+
+                        videoSelect.onchange = getStream;
+                    }
+                });
+            });
+            
+            $('#next-option-button').click(function(){
+                if(sessionManager.status==0&&sessionManager.onPage=='remote'){
+                    $('#left-content-panel').attr('geometry', 'primitive: circle; radius: 1.5;');
+                    $('#right-content-panel').attr('geometry', 'primitive: circle; radius: 1.5;');
+                    sessionManager.status=0;
+                    //document.getElementById('remote-animation').setAttribute('repeat', '0');
+                    document.querySelector(`#remote-button`).emit(`kill-remote`);
+                    document.querySelector(`#remote-button`).emit(`deselect-remote`);
+                }
+                else{
+                    if(sessionManager.status==sessionManager.pages.length-1){
+                        sessionManager.status=0;
+                      //  document.getElementById('portfolio-animation').setAttribute('repeat', '0');
+                        document.querySelector(`#portfolio-button`).emit(`kill-portfolio`);
+                        document.querySelector(`#portfolio-button`).emit(`deselect-portfolio`);
+                    }
+                    else{
+                        sessionManager.status++;
+                    }
+                }
+                
+                if(sessionManager.status>0){
+                    var prev = sessionManager.pages[sessionManager.status-1];
+                    //document.getElementById(`${prev}-animation`).setAttribute('repeat', '0');    
+                    document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
+                    document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
+                }
+
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+                //document.getElementById(`${page}-animation`).setAttribute('repeat', 'indefinite');
+
+                document.querySelector(`#${page}-button`).emit(`select-${page}`);
+                document.querySelector(`#${page}-button`).emit(`bounce-${page}`);
+                console.log(`now on page ${page}`);
+                
+                
+                $('#left-content-panel').attr('visible', 'true');
+                //$('#left-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                $('#center-call-icon').attr('visible', 'false');
+                $('#right-content-panel').attr('visible', 'true');
+               // $('#right-content-panel').attr('material', 'color: white; side: double; transparent: true; opacity: 0.3;');
+                
+                if(sessionManager.remoteMenuVisible){
+                    $('#center-remote-icon').attr('visible', 'false');
+                    sessionManager.remoteMenuVisible == false;
+                }
+                
+                if(sessionManager.portfolioMenuVisible){
+                    $('#center-portfolio-icon').attr('visible', 'false');
+                    sessionManager.portfolioMenuVisible == false;
+                }
+                
+                if(sessionManager.wifiMenuVisible){
+                    $('#center-wifi-icon').attr('visible', 'false');
+                    sessionManager.wifiMenuVisible == false;
+                }
+                
+                switch(page){
+                    case 'wifi':
+                        $('#left-content-panel').attr('value', 'CONNECT');
+                        
+                        $('#right-content-panel').attr('visible', 'false');
+                        $('#wifi-ar-title').attr('value', 'WIFI');
+                        $('#wifi-ar-title').attr('material','color: blue; side: double; transparent: true; opacity: 0.6;');
+                        
+                        $('#left-content-panel').attr('material','color: blue; side: double; transparent: true; opacity: 0.6;');
+                        
+                        $('#center-wifi-icon').attr('visible', 'true');
+                        
+                        sessionManager.wifiMenuVisible = true;
+                        break;
+                    case 'remote':
+                        $('#wifi-ar-title').attr('value', 'REMOTE');
+                        
+                        $('#left-content-panel').attr('value','ACCESS');
+                        $('#right-content-panel').attr('value','CUSTOMIZE');
+                        
+                        $('#left-content-panel').attr('material', 'color: red; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#right-content-panel').attr('material', 'color: red; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#wifi-ar-title').attr('material','color: red; side: double; transparent: true; opacity: 0.6;');
+                        
+                        $('#center-remote-icon').attr('visible', 'true');
+                        
+                        sessionManager.remoteMenuVisible = true;
+                        break;
+                    case 'portfolio':
+                        $('#left-content-panel').attr('material', 'color: #f4e842; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#right-content-panel').attr('material', 'color: #f4e842; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#left-content-panel').attr('value', 'MANAGE');
+                        $('#right-content-panel').attr('value', 'CASH');
+                        
+                        sessionManager.portfolioMenuVisible = true;
+                        
+                        $('#wifi-ar-title').attr('value', 'PORTFOLIO');
+                        $('#wifi-ar-title').attr('material','color: #f4e842; side: double; transparent: true; opacity: 0.6;');
+                        
+                        
+                        
+                        $('#center-portfolio-icon').attr('visible', 'true');
+                        
+                        sessionManager.portfolioMenuVisible = true;
+                        break;
+                    default:
+                        break;
+                }
+            });
+            
+            $('#prev-option-button').click(function(){
+                if(sessionManager.status==0&&sessionManager.onPage=='remote'){
+                    sessionManager.status=sessionManager.pages.length-1;
+                    document.querySelector(`#remote-button`).emit(`kill-remote`);
+                    document.querySelector(`#remote-button`).emit(`deselect-remote`);
+                    
+                    $('#left-content-panel').attr('geometry', 'primitive: circle; radius: 1.5;');
+                    $('#right-content-panel').attr('geometry', 'primitive: circle; radius: 1.5;');
+                }
+                else{
+                    if(sessionManager.status==0){
+                        sessionManager.status=sessionManager.pages.length-1;
+                        document.querySelector(`#wifi-button`).emit(`kill-wifi`);
+                        document.querySelector(`#wifi-button`).emit(`deselect-wifi`);
+                    }
+                    else{
+                        sessionManager.status--;
+                    }
+                }
+                
+                if(sessionManager.status<sessionManager.pages.length-1){
+                    var prev = sessionManager.pages[sessionManager.status+1];
+                    document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
+                    document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
+                }
+
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+                
+                document.querySelector(`#${page}-button`).emit(`select-${page}`);
+                document.querySelector(`#${page}-button`).emit(`bounce-${page}`);
+                console.log(`now on page ${page}`);
+                
+                $('#left-content-panel').attr('visible', 'true');
+                
+                $('#right-content-panel').attr('visible', 'false');
+                
+                $('#center-call-icon').attr('visible', 'false');
+                
+                if(sessionManager.remoteMenuVisible){
+                    $('#center-remote-icon').attr('visible', 'false');
+                    sessionManager.remoteMenuVisible == false;
+                }
+                
+                if(sessionManager.portfolioMenuVisible){
+                    $('#center-portfolio-icon').attr('visible', 'false');
+                    sessionManager.portfolioMenuVisible == false;
+                }
+                
+                if(sessionManager.wifiMenuVisible){
+                    $('#center-wifi-icon').attr('visible', 'false');
+                    sessionManager.wifiMenuVisible == false;
+                }
+                
+                switch(page){
+                    case 'wifi':
+                        $('#left-content-panel').attr('value', 'CONNECT');
+
+                        $('#wifi-ar-title').attr('value', 'WIFI');
+                        $('#wifi-ar-title').attr('material','color: blue; side: double; transparent: true; opacity: 0.6;');
+                        
+                        $('#left-content-panel').attr('material','color: blue; side: double; transparent: true; opacity: 0.6;');
+                        
+                        $('#center-wifi-icon').attr('visible', 'true');
+                        
+                        sessionManager.wifiMenuVisible = true;
+                        break;
+                    case 'remote':
+                        $('#wifi-ar-title').attr('value', 'REMOTE');
+                        
+                        $('#left-content-panel').attr('value','ACCESS');
+                        $('#right-content-panel').attr('visible','true');
+                        $('#right-content-panel').attr('value','CUSTOMIZE');
+
+                        $('#left-content-panel').attr('material', 'color: red; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#right-content-panel').attr('material', 'color: red; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#wifi-ar-title').attr('material','color: red; side: double; transparent: true; opacity: 0.6;');
+                        
+                        $('#center-remote-icon').attr('visible', 'true');
+                        
+                        sessionManager.remoteMenuVisible = true;
+                        break;
+                    case 'portfolio':
+                        $('#left-content-panel').attr('material', 'color: #f4e842; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#right-content-panel').attr('material', 'color: #f4e842; side: double; transparent: true; opacity: 0.3;');
+                        
+                        $('#right-content-panel').attr('visible', 'true');
+                        $('#left-content-panel').attr('value', 'MANAGE');
+                        $('#right-content-panel').attr('value', 'CASH');
+                        
+                        sessionManager.portfolioMenuVisible = true;
+                        
+                        $('#wifi-ar-title').attr('value', 'PORTFOLIO');
+                        $('#wifi-ar-title').attr('material','color: #f4e842; side: double; transparent: true; opacity: 0.6;');
+                        
+                        $('#center-portfolio-icon').attr('visible', 'true');
+                        
+                        sessionManager.portfolioMenuVisible = true;
+                        break;
+                    default:
+                        break;
+                }
+            });
+            
+            $('#select-option-button').click(function(){
+                var page = sessionManager.pages[sessionManager.status] || 'remote';
+                console.log(`selected page ${page}`);
+                switch(page){
+                    case 'wifi':
+                      //  window.location.href = 'https://www.wifi.com/in/patrice-morgan-ongoly-1a206b74/'
+                        break; 
+                    case 'remote':
+                    //    window.location.href = 'http://houseofven.us/remote'
+                        break;
+                    case 'portfolio':
+                      //  window.location.href = 'https://www.portfolio.com/houseofven.us'
+                        break;
+                    default:
+                        break;
+                }
+            });
+            
+        });
+    </script>
+</head>
+<body>
+    <div id='launch-application-page' class='entry-layer overlay'>
+        <div id='instructions'>
+            tap anywhere
+            <div id='logo'></div>
+            to view wifi
+        </div>
+    </div>
+    <!-- FOR PRODUCTION PURPOSES ONLY-->
+    <select id='videoSource'></select>
+    <input id='select-option-button' class='option-button' type='button' value='o' />
+    <input id='prev-option-button' class='option-button' type='button' value='<' />
+    <input id='next-option-button' class='option-button' type='button' value='>' />
+    
+    <video id="video" autoplay></video>
+    <div id='main-app-container' class='viewer-layer'>
+        <a-scene embedded id='rfid-experience-container'>
+            <a-assets>
+                <img id='floor-texture' src='./media/texture/grid_pattern.png' preload='true' />
+                <img id='earth-texture' src='./media/texture/earthmap1k.jpg' preload='true' />
+                
+                <img id='earth-texture' src='./media/texture/earthmap1k.jpg' preload='true' />
+                <img id='wifi-texture' src='./media/img/wifi-icon.png'/>
+                <img id='media-texture' src='./media/texture/visuals-texture.png'/>
+                <img id='wifi-photo-texture' src='./media/texture/cARd.png' />
+                <img id='wifi-icon-texture' src='./media/img/wifi-icon.png' />
+                <img id='remote-texture' src='./media/img/remote-icon.png' />
+                <img id='portfolio-texture' src='./media/img/portfolio-icon.png' />
+            </a-assets>
+            
+            
+            
+            <a-text value='13:45' position='0 6.5 -4' align='center' material='color: white;' width='12'></a-text><!-- font='monoid' -->
+            <a-text id='wifi-ar-title' geometry='primitive: plane; width: 11; height: 2;' value='UTILITIES' position='0 8 -4' align='center' material='color: white; side: double; transparent: true; opacity: 0;' color='white' width='20'></a-text><!-- font='monoid' -->
+    
+            <a-entity id='center-wifi-icon' geometry='primitive: circle; radius: 3;' position='0 3 -4' material='src: #wifi-icon-texture;' visible='false'></a-entity>
+            
+            <a-entity id='center-remote-icon' geometry='primitive: circle; radius: 3;' position='0 3 -4' material='src: #remote-texture;' visible='false'></a-entity>
+            
+            <a-entity id='center-portfolio-icon' geometry='primitive: circle; radius: 3;' position='0 3 -4' material='src: #portfolio-texture;' visible='false'></a-entity>
+            
+            <a-sphere id='wifi-button' material='src: #wifi-texture;' position="-6 0 -4" rotation='0 -45 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='wifi-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-wifi'></a-animation>
+                
+                <a-animation id='wifi-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-wifi'></a-animation>
+                
+                <a-animation id='wifi-animation' attribute='position' begin='bounce-wifi' end='kill-wifi' dur='1000' direction='alternate' from='-6 0 -4' to='-6 0.5 -4' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text value='wifi' position='-6 0 -3' align='center' material='color: white;' width='10'></a-text><!-- font='monoid' -->
+            
+            <a-sphere id='remote-button' material='src: #remote-texture; color: white;' position="0 0 -2" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='1.0' ></a-animation>
+                
+                <a-animation id='remote-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-remote'></a-animation>
+                
+                <a-animation id='remote-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-remote'></a-animation>
+                
+                <a-animation id='remote-animation' attribute='position' begin='bounce-remote' end='kill-remote' dur='1000' direction='alternate' from='0 0 -2' to='0 0.5 -2' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text id='center-button-label' value='remote' position='0 0 -1' align='center' material='color: white;' width='10'></a-text><!-- font='monoid' -->
+    
+            <a-sphere id='portfolio-button' material='src: #portfolio-texture;' position="6 0 -4" rotation='0 -90 0' radius="0.75">
+                <a-animation attribute='radius' easing='ease-out' delay='5000' dur='2000' from='0.75' to='0.5' ></a-animation>
+                
+                <a-animation id='portfolio-highlight' attribute='radius' easing='ease-out' dur='1000' from='0.5' to='1' begin='select-portfolio'></a-animation>
+                
+                <a-animation id='portfolio-shrink' attribute='radius' easing='ease-out' dur='1000' from='1' to='0.5' begin='deselect-portfolio'></a-animation>
+                
+                <a-animation id='portfolio-animation' attribute='position' begin='bounce-portfolio' end='kill-portfolio' dur='1000' direction='alternate' from='6 0 -4' to='6 0.5 -4' repeat='indefinite' ></a-animation>
+            </a-sphere>
+            <a-text value='portfolio' position='6 0 -3' align='center' material='color: white;' width='10'></a-text><!-- font='monoid' -->         
+            
+            <a-text id='left-content-panel' geometry='primitive: plane; width: 5; height: 5;' position='-6 4 -3' rotation='0 35 0' value='House of Venus\n\n cARd \n\n version 0.8.80' width='9' font='monoid' align='center' color='white' visible='true' material='color: white; side: double; transparent: true; opacity: 0.3;'></a-text><!-- font='monoid' -->
+            
+            <a-text id='right-content-panel' geometry='primitive: plane; width: 8; height: 6;' position='6 4 -4' rotation='0 -35 0' value='manage your cARd settings \n\nand \n\naccess built-in tools' font='monoid' width='9' align='center' color='white'  material='color: white; side: double; transparent: true; opacity: 0.3;'></a-text> <!-- font='monoid' -->
+
+            <a-entity position="0 3 6">            
+                <a-entity camera="active: true" look-controls wasd-controls></a-entity>
+            </a-entity>
+            <a-sky material='transparent: true; opacity: 0; color: white;'>
+            </a-sky>
+        </a-scene>
+    </div>
+</body>
+</html>

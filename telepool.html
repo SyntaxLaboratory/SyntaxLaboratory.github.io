@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>téléPOOL | Internet et Dépanneur du Pool</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="./media/icons.ico/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./media/icons.ico/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./media/icons.ico/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./media/icons.ico/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./media/icons.ico/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./media/icons.ico/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./media/icons.ico/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./media/icons.ico/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./media/icons.ico/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="./media/icons.ico/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./media/icons.ico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./media/icons.ico/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./media/icons.ico/favicon-16x16.png">
+    <link rel="manifest" href="./media/icons.ico/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="./media/icons.ico/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: monospace;
+        }
+        
+        body, html{
+            width: 100%;
+            height: 100%;
+            background-color: aquamarine;
+        }
+        
+        #navigation-container{
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 300px;
+            color: black;
+            font-size: 120%;
+            font-family: monospace;
+        }
+        
+        .navigation-option{
+            display: inline-block;
+            height: 100%;
+            width: 30%;
+            text-align: center;
+            text-transform: lowercase;
+            font-weight: 400;
+            cursor: pointer;
+            color: black;
+        }
+        
+        .navigation-option:hover{
+            text-transform: uppercase;
+            font-weight: 900;
+            color: white;
+        }
+        
+        #main-content-container{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 300px;
+            margin: -150px 0 0 -300px;
+            color: black;
+        }
+        
+        .action-button{
+            text-transform: uppercase;
+            width: 100px;
+            height: 50px;
+            border-radius: 15px;
+            text-align: center;
+            line-height: 40px;
+            color: black;
+            font-size: 90%;
+            font-weight: 900;
+            background-color: rgba(255, 255, 255, 0.3);
+            border: 3px white solid;
+            cursor: pointer;
+        }
+        
+        .action-button:hover{
+            background-color: rgba(255, 255, 255, 1.0);
+            color: bblack;
+        }
+        
+        .action-button:focus{
+            outline: none;
+        }
+        
+        #acid{
+            width: auto;
+        }
+        
+        #content-header{
+            font-weight: 900;
+            /*text-transform: uppercase;*/
+            font-size: 140%;
+            width: 90px;
+        }
+        
+        #logo-container{
+            width: 100px;
+            height: 90px;
+            position: absolute;
+            top: 6%;
+            left: 8%;
+            cursor: pointer;
+        }
+        
+        #logo{
+            background-image: url('./media/texture/globe-texture.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+        }
+        
+        #main-content{
+            font-size: 110%;
+        }
+        
+        .page-content-container{
+            opacity: 0;
+            display: none;
+        }
+        
+        .reseau-option{
+            cursor: pointer;
+        }
+        
+        #transfer-option:hover{
+            color: greenyellow;
+        }
+        
+        #account-option:hover{
+            color: red;
+        }
+        
+        #footer{
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            width: 400px;
+            text-align: center;
+            margin-left: -200px;
+            font-size: 90%;
+        }
+        
+        #main-content-footer{
+            width: 225px;
+            margin: 50px auto 0 auto;
+        }
+        
+        .page-section{
+            display: none;
+            opacity: 0;
+        }
+        
+        #media-panel-container{
+            width: 420px;
+            height: 300px;
+        }
+        
+        .media-content-preview-panel{
+            width: 100px;
+            height: 75px;
+            margin: 2px;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: inline-block;
+            position: relative;
+        }
+        
+        .media-content-title{
+            position: absolute;
+            bottom: 25px;
+            color: white;
+        }
+        
+        .media-rating{
+            position: absolute;
+            bottom: 5px;
+            color: red;
+        }
+    </style>
+    <script src='./js/jquery-3.2.1.min.js'></script>
+    <script>
+        var sessionManager = {
+            page: 'home',
+            section: null
+        }
+        
+        document.addEventListener('DOMContentLoaded', function(){
+            var contacts = document.getElementsByClassName('contact-item');
+            for(var j = 0; j<contacts.length; j++){
+                embedContacts(j, contacts);    
+            }
+            
+            setTimeout(function(){
+                $('#page-section-0').show().animate({
+                    opacity: 1.0
+                }, 1000, function(){
+                    sessionManager.section = 0;
+                });
+                
+                $('#main-content').show().animate({
+                    opacity: 1.0
+                }, 1000, function(){
+                    $('#second-line').animate({
+                        opacity: 1.0
+                    }, 1000);
+                });
+            }, 1500);
+            
+            document.getElementById('logo').addEventListener('click', function(){
+                $('.page-content-container').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                    $('#main-content').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                });
+                
+                sessionManager.page = 'home';
+            });
+            
+            document.getElementById('reseaux-option').addEventListener('click', function(){
+                $('.page-content-container').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                });
+                
+                setTimeout(function(){
+                    $('#reseaux-content').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                }, 1250);
+                
+                sessionManager.page = 'reseaux';
+            });
+            
+            document.getElementById('medias-option').addEventListener('click', function(){
+                $('.page-content-container').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                });
+                
+                setTimeout(function(){
+                    $('#medias-content').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                }, 1250);
+                
+                sessionManager.page = 'medias';
+            });
+            
+            document.getElementById('contact-option').addEventListener('click', function(){
+                $('.page-content-container').not('#contact-content').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                });
+                
+                setTimeout(function(){
+                    $('#contact-content').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                }, 1250);
+                
+                sessionManager.page = 'contact';
+            });
+            
+            document.getElementById('pool-option').addEventListener('click', function(){
+                window.location.href = './transfers';
+            });
+            /*contacts.forEach(function(currVal, currIndex, listObj){
+                listObj.addEventListener('click', function(){
+                    
+                })
+            });*/
+            $('#more-button').click(function(){
+                $('#page-section-0').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                    $('#more-button').animate({
+                        opacity: 0
+                    }, 1000);
+                    
+                    $('#page-section-1').show().animate({
+                        opacity: 1.0
+                    }, 1000, function(){
+                        sessionManager.section = 1;
+                    });
+                });
+            });
+            
+            $('#connect-button').click(function(){
+                $('#reseaux-option').click();
+            });
+        
+        });
+        
+        // region developper
+    </script>
+</head>
+<body>
+    <div id='main-profile-container'>
+        <div id='logo-container'>
+            <div id='logo'></div>
+            <div id='content-header'>téléPOOL</div>
+        </div>
+        <div id='navigation-container'>
+            <div id='reseaux-option' class='navigation-option'>réseaux</div>
+            <div id='medias-option' class='navigation-option'>catalogue</div>
+            <div id='contact-option' class='navigation-option'>contact</div>
+        </div>
+        <!--<div id='fa'></div>-->
+        <div id='main-content-container'>
+            <div id='main-content' class='page-content-container'>
+                <div id='page-section-0' class='page-section'>
+                    <p style='-webkit-text-stroke-width: 1px; -webkit-text-stroke-color: gray; color: white; font-size: 500%; text-align: center; font-family: monospace; font-style: italic; font-weight: 900;'>Hello World!</p>
+                    <br/>
+                    <p style='font-size: 115%;'>
+                       <!-- Rejoignez l'ensemble de la famille humaine sur l'internet où que vous soyez. Avec TÉLÉPOOL vous pouvez --> Naviguez l'internet et les réseaux hypermedias dans la région du Pool gratuitement à partir de votre smartphone
+                    </p>
+                </div>
+                <div id='page-section-1' class='page-section'>
+                    <p style='font-size: 115%;'>
+                        Order once to receive your MAVRICOM cARd and connect to the internet by simply tapping your phone to the cARd.
+                    </p>
+                </div>
+                <div id='main-content-footer'>
+                    <input type="button" id='more-button' class='action-button' value="plus d'info" />
+                    <input type="button" id='connect-button' class='action-button' value="connexion" />
+                </div>
+            </div>
+            <div id='reseaux-content' class='page-content-container'>
+                <p id='pool-option' class='reseau-option'>brazza-pool</p>
+                <br/>
+                <p id='country-option' class='reseau-option'>kongokomm</p>
+                <br/>
+                <p id='international-option' class='reseau-option'>acorn park</p>
+            </div>
+            <div id='medias-content' class='page-content-container'>
+                <div id='media-panel-container'>
+                    <div id='media-content-preview-0' class='media-content-preview-panel'>
+                        <div id='media-content-title-0' class='media-content-title'>titre 0</div>
+                        <div id='media-rating-0' class='media-rating'>* * * * *</div>
+                    </div>
+                    <div id='media-content-preview-1' class='media-content-preview-panel'>
+                        <div id='media-content-title-1' class='media-content-title'>titre 1</div>
+                        <div id='media-rating-1' class='media-rating'>*</div>
+                    </div>
+                    <div id='media-content-preview-2' class='media-content-preview-panel'>
+                        <div id='media-content-title-2' class='media-content-title'>titre 2</div>
+                        <div id='media-rating-2' class='media-rating'>* * * * *</div>
+                    </div>
+                    <div id='media-content-preview-3' class='media-content-preview-panel'>
+                        <div id='media-content-title-3' class='media-content-title'>titre 3</div>
+                        <div id='media-rating-3' class='media-rating'>* * *</div>
+                    </div>
+                    <div id='media-content-preview-4' class='media-content-preview-panel'>
+                        <div id='media-content-title-4' class='media-content-title'>titre 4</div>
+                        <div id='media-rating-4' class='media-rating'>* *</div>
+                    </div>
+                </div>
+            </div>
+            <div id='contact-content' class='page-content-container'>
+                <p>questions concernant nos operations?</p><p>problèmes de connectivité?</p><p>lettres d'admiration?</p><p>contactez nous à:</p>
+                <br/>
+                <p><a href='mailto:mavricomfinancial@gmail.com'>mavricomfinancial@gmail.com</a></p>
+            </div>
+        </div>
+        <div id='footer'>HOMMES Initiative | 2018</div>
+    </div>
+</body>
+</html>

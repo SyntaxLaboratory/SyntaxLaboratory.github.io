@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MAVRICOM: Post-Industrial Entrepreneurship</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="./media/icons.ico/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./media/icons.ico/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./media/icons.ico/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./media/icons.ico/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./media/icons.ico/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./media/icons.ico/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./media/icons.ico/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./media/icons.ico/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./media/icons.ico/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="./media/icons.ico/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./media/icons.ico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./media/icons.ico/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./media/icons.ico/favicon-16x16.png">
+    <link rel="manifest" href="./media/icons.ico/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="./media/icons.ico/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: monospace;
+        }
+        
+        body, html{
+            width: 100%;
+            height: 100%;
+        }
+        
+        #navigation-container{
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 300px;
+            color: black;
+            font-size: 1.2em;
+            font-family: monospace;
+        }
+        
+        .navigation-option{
+            display: inline-block;
+            height: 100%;
+            width: 30%;
+            text-align: center;
+            text-transform: lowercase;
+            font-weight: 400;
+            cursor: pointer;
+        }
+        
+        .navigation-option:hover{
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+        
+        #main-content-container{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 500px;
+            height: 300px;
+            margin: -150px 0 0 -250px;
+            color: black;
+        }
+        
+        #acid{
+            width: auto;
+        }
+        
+        #content-header{
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 140%;
+            width: 90px;
+        }
+        
+        #logo-container{
+            width: 100px;
+            height: 90px;
+            position: absolute;
+            top: 6%;
+            left: 8%;
+            cursor: pointer;
+        }
+        
+        #logo{
+            background-image: url('./media/texture/globe-texture.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+        }
+        
+        #main-content{
+            font-size: 1.1em;
+        }
+        
+        .page-content-container{
+            opacity: 0;
+            display: none;
+        }
+        
+        .financials-item-header, .telecomm-item-header{
+            cursor: pointer;
+            font-weight: 400;
+        }
+        
+        .financials-item-header:hover, .telecomm-item-header:hover{
+            font-weight: 900;
+        }
+        
+        #get-cash-option:hover{
+            color: greenyellow;
+        }
+        
+        #get-crypto-option:hover{
+            color: blueviolet;
+        }
+        
+        #transfer-option:hover{
+            color: blue;
+        }
+        
+        #account-option:hover{
+            color: red;
+        }
+        
+        #snack-shack-item-header:hover{
+            color: rgba(255, 25, 100, 1.0);
+        }
+        
+        #telepool-item-header:hover{
+            color: rgba(0, 255, 255, 1.0);
+        }
+        
+        #hommes-item-header:hover{
+            color: midnightblue;
+        }
+        
+        #footer{
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            width: 400px;
+            text-align: center;
+            margin-left: -200px;
+            font-size: 0.9em;
+        }
+        
+        .home-page-line{
+            opacity: 0;
+        }
+        
+        #more-options-container{
+            width: 300px;
+            height: 50px;
+            margin: 5% auto 0 auto;
+            opacity: 0;
+        }
+        
+        .home-page-option-button{
+            width: 125px;
+            height: 35px;
+            border-radius: 15px;
+            color: black;
+            background-color: rgba(0, 0, 0, 0.1);
+            border: 2px white solid;
+            cursor: pointer;
+        }
+        
+        .home-page-option-button:hover{
+            color: white;
+            background-color: rgba(0, 0, 0, 0.9);
+            font-weight: 900;
+            border: 2px white dashed;
+        }
+        
+        .telecomm-item-header, .financials-item-header, .contact-item-header{
+            font-size: 1.4em;
+            text-transform: lowercase;
+        }
+    </style>
+    <script src='./js/jquery-3.2.1.min.js'></script>
+    <script>
+        var sessionManager = {
+            page: 'home'
+        }
+        
+        document.addEventListener('DOMContentLoaded', function(){
+            var contacts = document.getElementsByClassName('contact-item');
+            for(var j = 0; j<contacts.length; j++){
+                embedContacts(j, contacts);    
+            }
+            
+            setTimeout(function(){
+                $('#main-content').show().animate({
+                    opacity: 1.0
+                }, 1000, function(){
+                    $('#second-line').animate({
+                        opacity: 1.0
+                    }, 1000, function(){
+                        $('#third-line').animate({
+                            opacity: 1.0
+                        }, 1000, function(){
+                            $('#more-options-container').animate({
+                                opacity: 1.0
+                            }, 1000);
+                        });
+                    });
+                });
+            }, 1500);
+            
+            document.getElementById('logo').addEventListener('click', function(){
+                $('.page-content-container').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                });
+                
+                setTimeout(function(){
+                    $('#main-content').show().animate({
+                        opacity: 1.0
+                    }, 1000, function(){
+                        sessionManager.page = 'home'; 
+                    });
+                }, 1100)
+            });
+            
+            document.getElementById('financials-option').addEventListener('click', function(){
+                $('.page-content-container').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                });
+                
+                setTimeout(function(){
+                    $('#financials-content').show().animate({
+                        opacity: 1.0
+                    }, 1000, function(){
+                        sessionManager.page = 'financials';
+                    });
+                }, 1100);
+                
+            });
+            
+            document.getElementById('telecomm-option').addEventListener('click', function(){
+                $('.page-content-container').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                });
+                
+                setTimeout(function(){
+                    $('#telecomm-content').show().animate({
+                        opacity: 1.0
+                    }, 1000, function(){
+                        sessionManager.page = 'telecomm';
+                    });
+                }, 1100);
+            });
+            
+            document.getElementById('contact-option').addEventListener('click', function(){
+                $('.page-content-container').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                });
+                
+                setTimeout(function(){
+                    $('#contact-content').show().animate({
+                        opacity: 1.0
+                    }, 1000, function(){
+                        sessionManager.page = 'contact';
+                    });
+                }, 1100);
+            });
+            
+            document.getElementById('transfer-option').addEventListener('click', function(){
+                window.location.href = './transfers';
+            });
+            
+            document.getElementById('snack-shack-item-header').addEventListener('click', function(){
+                window.location.href = './snackshack.html';
+            });
+            
+            document.getElementById('telepool-item-header').addEventListener('click', function(){
+                window.location.href = './telepool.html';
+            });
+            
+            document.getElementById('hommes-item-header').addEventListener('click', function(){
+                window.location.href = './telepool.html';
+            });
+            
+            /*contacts.forEach(function(currVal, currIndex, listObj){
+                listObj.addEventListener('click', function(){
+                    
+                })
+            });*/
+        })
+    </script>
+</head>
+<body>
+    <div id='main-profile-container'>
+        <div id='logo-container'>
+            <div id='logo'></div>
+            <div id='content-header'>mavricom.</div>
+        </div>
+        <div id='navigation-container'>
+            <div id='financials-option' class='navigation-option'>fintech</div>
+            <div id='telecomm-option' class='navigation-option'>telecomm</div>
+            <div id='contact-option' class='navigation-option'>contact</div>
+        </div>
+        <!--<div id='fa'></div>-->
+        <div id='main-content-container'>
+            <!--<div class='intro-header'>mavricom.</div>-->
+            <div id='main-content' class='page-content-container'>
+                <p>IoT + immersive media + society</p>
+                <br/>
+                <p id='second-line' class='home-page-line'>we offer the standard in 21st century <span style='font-style: italic; font-weight: bold; font-family: monospace;'>Community-as-a-Service</span> innovation so you can build, explore, and share the worlds you love</p>
+                <br />
+                <p id='third-line' class='home-page-line'>your future, your hand.</p>
+                <div id='more-options-container' class='home-page-line'>
+                    <input type='button' value='learn more' class='home-page-option-button' id='visit-blog-button' />
+                    <input type='button' value='catch a glimpse' class='home-page-option-button' id='view-products-button' />
+                </div>
+            </div>
+            <div id='financials-content' class='page-content-container'>
+                <p id='get-cash-option' class='financials-item-header'>get ca$h</p>
+                <p>use VENGO to withdraw cash from your Google Pay, Apple Pay, Venmo, and/or Mavricom digital wallets when you need it the most</p>
+                <br />
+                <p id='transfer-option' class='financials-item-header'>send money</p>
+                <p>transfer funds, track ongoing transfers, and/or monitor cryptoexchanges</p>
+                <br/>
+                <p id='get-crypto-option' class='financials-item-header'>buy crypt0</p>
+                <p>purchase blockchain coins and view popular exchange rates</p>
+                <br />
+                <p id='account-option' class='financials-item-header'>open an account</p>
+            </div>
+            <div id='telecomm-content' class='page-content-container'>
+                <p id='snack-shack-item-header' class='telecomm-item-header'>snack shack</p>
+                <p>the digital convenience store for college students - umd, college park beta now open</p>
+                <br/>
+                <p id='telepool-item-header' class='telecomm-item-header'>téléPOOL</p>
+                <p>open internet service and food delivery for the Pool region, Congo-Brazzaville</p>
+                <br/>
+                <p id='hommes-item-header' class='telecomm-item-header'>house of mars</p>
+                <p>the CaaS administration of the Maryland Venture Crucible</p>
+            </div>
+            <div id='contact-content' class='page-content-container'>
+                <p id='contact-item-header' class='contact-item-header'>questions</p>
+                <p>about our operations?</p><p>issues with accessibility?</p><p>fan mail?</p><p>contact us at:</p>
+                <br/>
+                <p><a href='mailto:mavricomfinancial@gmail.com'>mavricomfinancial@gmail.com</a></p>
+            </div>
+        </div>
+        <div id='footer'>HOMMES Initiative | 2018</div>
+    </div>
+</body>
+</html>

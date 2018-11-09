@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snack Shack | The Digital Convenience Store</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="./media/icons.ico/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./media/icons.ico/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./media/icons.ico/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./media/icons.ico/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./media/icons.ico/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./media/icons.ico/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./media/icons.ico/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./media/icons.ico/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./media/icons.ico/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="./media/icons.ico/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./media/icons.ico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./media/icons.ico/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./media/icons.ico/favicon-16x16.png">
+    <link rel="manifest" href="./media/icons.ico/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="./media/icons.ico/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: monospace;
+        }
+        
+        body, html{
+            width: 100%;
+            height: 100%;
+            background-color: yellow;
+        }
+        
+        #navigation-container{
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 300px;
+            color: black;
+            font-size: 1.2em;
+            font-family: monospace;
+        }
+        
+        .navigation-option{
+            display: inline-block;
+            height: 100%;
+            width: 30%;
+            text-align: center;
+            text-transform: lowercase;
+            font-weight: 400;
+            cursor: pointer;
+        }
+        
+        .navigation-option:hover{
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+        
+        #main-content-container{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 500px;
+            height: 300px;
+            margin: -150px 0 0 -250px;
+            color: black;
+        }
+        
+        #acid{
+            width: auto;
+        }
+        
+        #content-header{
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 1.4em;
+        }
+        
+        #logo{
+            background-image: url('./media/img/shack-icon.png');
+            background-size: 80% 80%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            position: absolute;
+            top: 8%;
+            left: 8%;
+            cursor: pointer;
+        }
+        
+        #main-content{
+            font-size: 1.1em;
+        }
+        
+        .page-content-container{
+            opacity: 0;
+            display: none;
+        }
+        
+        #snacks-option, #rides-option{
+            cursor: pointer;
+        }
+        
+        #snacks-option:hover{
+            color: greenyellow;
+        }
+        
+        #rides-option:hover{
+            color: red;
+        }
+        
+        #footer{
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            width: 400px;
+            text-align: center;
+            margin-left: -200px;
+            font-size: 0.9em;
+        }
+        
+        .get-item-option, .order-option{
+            display: inline-block;
+            width: 110px;
+            height: 120px;
+            text-align: center;
+            font-weight: 400;
+            text-transform: lowercase;
+        }
+        
+        .get-item-option:hover, .order-option:hover{
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        
+        .item-option-icon{
+            width: 110px;
+            height: 100px;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        
+        #cash-icon{
+            background-image: url('./media/img/cash-icon.png');
+            background-size: 80% 100%;
+        }
+        
+        #internet-icon{
+            background-size: 70% 80%;
+            background-image: url('./media/texture/globe-texture.png');
+        }
+        
+        #snacks-icon, #snacks-icon-order{
+            background-size: 80% 70%;
+            background-image: url('./media/img/snacks-icon.png');
+        }
+        
+        #rides-icon, #rides-icon-order{
+            background-size: 70% 70%;
+            background-image: url('./media/img/rides-icon.png');
+        }
+    </style>
+    <script src='./js/jquery-3.2.1.min.js'></script>
+    <script>
+        var sessionManager = {
+            page: 'home'
+        }
+        
+        document.addEventListener('DOMContentLoaded', function(){
+            var contacts = document.getElementsByClassName('contact-item');
+            for(var j = 0; j<contacts.length; j++){
+                embedContacts(j, contacts);    
+            }
+            
+            setTimeout(function(){
+                $('#main-content').show().animate({
+                    opacity: 1.0
+                }, 1000, function(){
+                    $('#second-line').animate({
+                        opacity: 1.0
+                    }, 1000);
+                });
+            }, 1500);
+            
+            document.getElementById('logo').addEventListener('click', function(){
+                $('.page-content-container').not('#main-content').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                });
+                
+                $('#main-content').show().animate({
+                    opacity: 1.0
+                }, 1000);
+                
+                sessionManager.page = 'home';
+            });
+            
+            document.getElementById('order-option').addEventListener('click', function(){
+                $('.page-content-container').not('#order-content').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                    
+                    $('#order-content').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                });
+                
+                sessionManager.page = 'order';
+            });
+            
+            document.getElementById('catalog-option').addEventListener('click', function(){
+                $('.page-content-container').not('#catalog-content').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                    
+                    $('#catalog-content').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                });
+                
+                sessionManager.page = 'catalog';
+            });
+            
+            document.getElementById('contact-option').addEventListener('click', function(){
+                $('.page-content-container').not('#contact-content').animate({
+                    opacity: 0
+                }, 1000, function(){
+                    $(this).hide();
+                    $('#contact-content').show().animate({
+                        opacity: 1.0
+                    }, 1000);
+                });
+                
+                sessionManager.page = 'contact';
+            });
+            
+            document.getElementById('snacks-option').addEventListener('click', function(){
+                window.location.href = './transfers';
+            });
+            /*contacts.forEach(function(currVal, currIndex, listObj){
+                listObj.addEventListener('click', function(){
+                    
+                })
+            });*/
+        })
+    </script>
+</head>
+<body>
+    <div id='main-profile-container'>
+        <div id='logo'></div>
+        <div id='navigation-container'>
+            <div id='order-option' class='navigation-option'>order</div>
+            <div id='catalog-option' class='navigation-option'>catalog</div>
+            <div id='contact-option' class='navigation-option'>contact</div>
+        </div>
+        <!--<div id='fa'></div>-->
+        <div id='main-content-container'>
+            <div id='content-header'>snack shack.</div>
+            <div id='main-content' class='page-content-container'>
+                <p>the digital convenience store</p>
+                <br/>
+                <div id='second-line' style='opacity: 0;'>
+                    <div id='get-cash-option' class='get-item-option'>
+                        <div id='cash-icon' class='item-option-icon'></div>
+                        cash
+                    </div>
+                    <div id='get-internet-option' class='get-item-option'>
+                        <div id='internet-icon' class='item-option-icon'></div>
+                        internet
+                    </div>
+                    <div id='get-snacks-option' class='get-item-option'>
+                        <div id='snacks-icon' class='item-option-icon'></div>
+                        snacks
+                    </div>
+                    <div id='get-rides-option' class='get-item-option'>
+                        <div id='rides-icon' class='item-option-icon'></div>
+                        rides 
+                    </div>
+                </div>
+            </div>
+            <div id='order-content' class='page-content-container'>
+                <div id='snacks-option' class='order-option'>
+                    <div id='snacks-icon-order' class='item-option-icon'></div>snacks
+                </div>
+                <br/>
+                <div id='rides-option' class='order-option'>
+                    <div id='rides-icon-order' class='rides-icon item-option-icon'></div>rides
+                </div>
+            </div>
+            <div id='catalog-content' class='page-content-container'>
+                <p>currently only available in paris or bangalore.</p>
+                <br/>
+                <p>updates coming soon...</p>
+            </div>
+            <div id='contact-content' class='page-content-container'>
+                <p>questions about our operations?</p><p>issues with accessibility?</p><p>fan mail?</p><p>contact us at:</p>
+                <br/>
+                <p><a href='mailto:mavricomfinancial@gmail.com'>mavricomfinancial@gmail.com</a></p>
+            </div>
+        </div>
+        <div id='footer'>HOMMES Initiative | 2018</div>
+    </div>
+</body>
+</html>
