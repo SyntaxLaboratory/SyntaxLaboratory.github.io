@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
 <html>
 <head>
     <meta charset='utf-8' />
@@ -28,10 +31,15 @@
                 custom: null
             }
         };
+<<<<<<< HEAD
 
         function requestFullScreen(element) { //    makes the application fullscreen on fullscreen equipped browsers
             var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen; // Supports most browsers and their versions.
 
+=======
+        function requestFullScreen(element) { //    makes the application fullscreen on fullscreen equipped browsers
+            var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen; // Supports most browsers and their versions.
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
             if (requestMethod) { // Native full screen.
                 requestMethod.call(element);
                 //console.log('this element');
@@ -59,7 +67,10 @@
                 var deviceInfo = deviceInfos[i];
                 var option = document.createElement('option');
                 option.value = deviceInfo.deviceId;
+<<<<<<< HEAD
 
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
                 if (deviceInfo.kind === 'videoinput') {
                     option.text = deviceInfo.label || 'camera ' + (videoSelect.length + 1);
                     videoSelect.appendChild(option);
@@ -69,22 +80,33 @@
                 }
             }
         }
+<<<<<<< HEAD
 
         function getStream() {
             var videoSelect = document.querySelector('select#videoSource');
 
+=======
+        function getStream() {
+            var videoSelect = document.querySelector('select#videoSource');
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
             if (window.stream) {
                 window.stream.getTracks().forEach(function(track) {
                     track.stop();
                 });
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
             var constraints = {
                 video: {
                     deviceId: {exact: videoSelect.value}
                 }
             };
+<<<<<<< HEAD
 
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
             navigator.mediaDevices.getUserMedia(constraints).then(gotStream).catch(handleError);
         }
         
@@ -93,13 +115,17 @@
             video.srcObject = stream;
             //video.play();
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
         function handleError(error) {
             console.log('Error: ', error);
         }
         
         $(document).ready(function(){
             initializeSession();
+<<<<<<< HEAD
 
             // FIRST STAGE
             $('#launch-application-page').click(function(){
@@ -109,6 +135,13 @@
                 var elem = document.body;
                 requestFullScreen(elem);
 
+=======
+            // FIRST STAGE
+            $('#launch-application-page').click(function(){
+                console.log('application launch...');
+                var elem = document.body;
+                requestFullScreen(elem);
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
                 $(this).animate({
                     height: 0
                 }, 2500, function(){
@@ -123,7 +156,10 @@
                     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                         // Not adding `{ audio: true }` since we only want video now
                         navigator.mediaDevices.enumerateDevices().then(gotDevices).then(getStream).catch(handleError);
+<<<<<<< HEAD
 
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
                         videoSelect.onchange = getStream;
                     }
                 });
@@ -155,7 +191,10 @@
                     document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
                     document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
                 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
                 var page = sessionManager.pages[sessionManager.status];
                 sessionManager.onPage = page;
                 //document.getElementById(`${page}-animation`).setAttribute('repeat', 'indefinite');
@@ -305,10 +344,15 @@
                     document.querySelector(`#${prev}-button`).emit(`kill-${prev}`);
                     document.querySelector(`#${prev}-button`).emit(`deselect-${prev}`);
                 }
+<<<<<<< HEAD
 
                 var page = sessionManager.pages[sessionManager.status];
                 sessionManager.onPage = page;
 
+=======
+                var page = sessionManager.pages[sessionManager.status];
+                sessionManager.onPage = page;
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
                 if(sessionManager.mediaMenuVisible==true){
                     document.querySelector('#media-item-0').emit('hide-media-item-0');
                     document.querySelector('#media-item-1').emit('hide-media-item-1');
@@ -1051,4 +1095,8 @@
         </a-scene>
     </div>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> c27281113ec486b2c6e211fe2b2e3592db58e356
