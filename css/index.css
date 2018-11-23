@@ -1,44 +1,98 @@
-@font-face {
-  font-family: Biko;
-  src:url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/4273/biko-black.woff");
+/* body {
+  background:radial-gradient(#1d1f20,#000);
+  font-family: "PT Sans";
+  margin:0;
+} */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: white;
-  margin: 2rem;
+  font-family: "PT Sans";
+  background-color: #ddd;
+  color: #333;
 }
 
-header {
-  width: 100%;
-  margin: 0 auto;
+.section {
   position: relative;
-  max-width: 1200px;
+  width: 900px;
+  max-width: 80%;
+  border: 2px solid #333;
+  border-top: none;
+  text-align: center;
+  margin: 60px auto;
 }
 
-header video {
-   width: 100%;
- }
-
-svg {
-  width: 100%;
-  position:absolute;
-  top: 0;
-  left: 0; // needed for FF, Safari, Edge
-  height: 100%;
+.section h1 {
+  position: relative;
+  margin-top: -14px;
+  display: inline-block;
+  letter-spacing: 4px;
 }
 
-svg text {
-  font-family: Biko, sans-serif;
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 38px;
+.top-border{
+  position: absolute;
+  height: 2px;
+  width: 24%;
+  background-color: #333;
 }
 
-svg rect {
-  fill: white;
+.right {
+  right: 0;
 }
 
-svg > rect {
-    -webkit-mask: url(#mask);
-    mask: url(#mask);
+.left {
+  left: 0;
+}
+
+@media (max-width: 685px) {
+.top-border {
+  width: 18%;
+    }
+}
+
+.section p {
+  width: 61%;
+  margin: 20px auto 40px auto;
+  line-height: 30px;
+}
+
+.section a {
+  outline: 0;
+  display: inline-block;
+  padding: 20px;
+  margin-bottom: 40px;
+  width: 440px;
+  max-width: 80%;
+  background-color: #333;
+  color: #fff;
+  font-size: 22px;
+  letter-spacing: 3px;
+  transition: all 0.3s ease 0s;
+  -moz-transition: all 0.3s ease 0s;
+  -webkit-transition: all 0.3s ease 0s;
+}
+
+.section a:hover {
+  background-color: #1D222D;
+}
+
+.section a:link, .section a:visited, .section a:link:hover, .section a:visited:hover {
+  text-decoration: none;
+  color: #fff;
+}
+
+@media (max-width: 500px) {
+  .top-border {
+    display: none;
+  }
+  .section {
+  border-top: 2px solid #333;
+  }
+  .section h1 {
+    margin: 20px 6px;
+  }
 }
