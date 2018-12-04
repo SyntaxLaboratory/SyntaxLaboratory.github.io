@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:4.0
+PRODID:0
+N:Mercedes;Jeffrey;;;
+FN:Jeffrey Mercedes
+EMAIL:Jeff.Mercedes@gmail.com
+ORG:Syntax Labs
+TEL:(202) 577-8306
+URL;type=pref:https://syntaxlaboratory.github.io/
+ADR:;1600 Pennsylvania Avenue NW;;Washington;DC;20500;United States
+END:VCARD
