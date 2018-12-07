@@ -35,10 +35,37 @@ a {text-decoration: none;}
 }
 
 .prof {
-	width: 30%;
-	height: 28%;
+	width: 40%;
+	height: 38%;
 	border:3px solid white;
 	border-radius:20%;
+}
+
+.phone-num {
+	background-color: lightgrey;
+	width: 300px;
+	padding: 25px;
+	margin: 25px;
+	-webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+	box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+}
+
+.item1 { grid-area: menu; margin: auto; }
+.item2 { grid-area: main; }
+.item3 { grid-area: footer; }
+
+.grid-container {
+	margin:auto;
+	background-color: lightgrey;
+	width: 300px;
+  display: grid;
+  grid-template-areas:
+    'menu main main main main main'
+    'menu footer footer footer footer footer';
+  grid-gap: 5px;
+  padding: 5px;
+	-webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+	box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
 }
 
 .container {
