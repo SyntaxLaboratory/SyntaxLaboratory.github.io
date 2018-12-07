@@ -31,6 +31,7 @@ a {text-decoration: none;}
 
 .position {
 	color: white;
+	font-size: 15px;
 }
 
 .prof {
@@ -139,7 +140,7 @@ nav li a:hover {color: #000;}
 header {
 	height: 60px;
 	z-index: 2;
-	background-color: #060a0c;
+	background-color: #red;
 
 	position: fixed;
 	top: 0;
@@ -159,7 +160,6 @@ header h1 {
 }
 .burger {display: block;}
 
-
 .name {
 	color: white;
 	font: 'Raleway', sans-serif;
@@ -172,6 +172,7 @@ header h1 {
 
 .position {
 	color: white;
+	font-size: 15px;
 }
 
 .prof {
@@ -180,7 +181,6 @@ header h1 {
 	border:3px solid white;
 	border-radius:20%;
 }
-
 
 /*  Nav Drawer Layout  */
 nav {position: relative;}
