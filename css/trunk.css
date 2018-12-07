@@ -35,7 +35,7 @@ a {text-decoration: none;}
 header {
 	height: 60px;
 	position: relative;
-	background-color: #000;
+	background-color: #ffffff;
 }
 header h1 {
 	color: #000;
@@ -170,7 +170,7 @@ nav li:first-child a.active,
 nav li:first-child a:hover
 {border-radius: 10px 0 0 0;}
 
-.header-section {margin-top: 60px;}
+.header-section {margin-top: 10px;}
 
 
 /* NAVIGATION ANNIMATION */
