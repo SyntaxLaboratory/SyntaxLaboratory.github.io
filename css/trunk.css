@@ -160,6 +160,28 @@ header h1 {
 .burger {display: block;}
 
 
+.name {
+	color: white;
+	font: 'Raleway', sans-serif;
+	font-size: 30px;
+	word-spacing: 0px;
+	font-weight: 400;
+
+	text-transform: capitalize;
+}
+
+.position {
+	color: white;
+}
+
+.prof {
+	width: 30%;
+	height: 28%;
+	border:3px solid white;
+	border-radius:20%;
+}
+
+
 /*  Nav Drawer Layout  */
 nav {position: relative;}
 
