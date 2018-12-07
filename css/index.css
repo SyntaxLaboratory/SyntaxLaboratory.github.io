@@ -1,8 +1,8 @@
-/* body {
+body {
   background:radial-gradient(#1d1f20,#000);
   font-family: "PT Sans";
   margin:0;
-} */
+}
 
 * {
   box-sizing: border-box;
@@ -10,11 +10,11 @@
   padding: 0;
 }
 
-body {
+/* body {
   font-family: "PT Sans";
   background-color: #ddd;
   color: #333;
-}
+} */
 
 .section {
   position: relative;
