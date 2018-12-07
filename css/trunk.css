@@ -1,19 +1,19 @@
 body {
 	background-color: #000;
-	
+
 	font: 12px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
-	color: #9aa6af;
+	color: #000;
 	text-rendering: optimizelegibility;
-	
+
 	-webkit-tap-highlight-color:rgba(0,0,0,0);
 	-webkit-text-size-adjust: none;
 	-webkit-font-smoothing: antialiased;
-	
-	-moz-tap-highlight-color:rgba(0,0,0,0); 
+
+	-moz-tap-highlight-color:rgba(0,0,0,0);
 	-moz-text-size-adjust: none;
 	-moz-font-smoothing: antialiased;
-	
-	-ms-tap-highlight-color:rgba(0,0,0,0); 
+
+	-ms-tap-highlight-color:rgba(0,0,0,0);
 	-ms-text-size-adjust: none;
 	-ms-font-smoothing: antialiased;
 }
@@ -35,10 +35,10 @@ a {text-decoration: none;}
 header {
 	height: 60px;
 	position: relative;
-	background-color: #f3f5f6;
+	background-color: #000;
 }
 header h1 {
-	color: #9aa6af;
+	color: #000;
 	text-align: left;
 	font-size: 27px;
 	line-height: 60px;
@@ -52,7 +52,7 @@ header h1 {
 	padding: 10px;
 	top: 4px;
 	left: 10px;
-	
+
 	display: none;
 }
 .burger li {
@@ -71,14 +71,14 @@ nav {
 }
 nav li {
 	float: left;
-	
+
 	display: inline-block;
 }
 nav li a {
 	font-size: 11px;
 	color: #9aa6af;
 	padding: 24px 15px;
-	
+
 	display: block;
 }
 nav li a:hover {color: #000;}
@@ -90,10 +90,10 @@ nav li a:hover {color: #000;}
 
 .header-section,
 .body-section,
-.footer-section 
+.footer-section
 {padding: 20px;}
 
-.header-section {background-color: #ffffff;}
+.header-section {background-color: #000;}
 .body-section {background-color: #f4f5f6;}
 .footer-section {background-color: #dadee1;}
 .placefiller {
@@ -119,12 +119,12 @@ header {
 	height: 60px;
 	z-index: 2;
 	background-color: #060a0c;
-	
+
 	position: fixed;
 	top: 0;
 	right: 0;
 	left: 0;
-	
+
 		/* starting point */
 	-webkit-transform: translate3d(0,0,0);
 	-moz-transform: translate3d(0,0,0);
@@ -167,7 +167,7 @@ nav li a:hover {
 	background-color: #19252c;
 }
 nav li:first-child a.active,
-nav li:first-child a:hover 
+nav li:first-child a:hover
 {border-radius: 10px 0 0 0;}
 
 .header-section {margin-top: 60px;}
@@ -183,7 +183,7 @@ nav {
 	margin: 0;
 	background-color: #1d2d35;
 	border-radius: 8px;
-	
+
 	/* starting point */
 	opacity: .3;
 	-webkit-transform: translate3d(5%,0,0)scale(.97);
@@ -197,10 +197,10 @@ nav.open {
 
 	-webkit-transform: translate3d(0,0,0)scale(1);
 	-webkit-animation: slideIn .35s ease-in-out;
-	
+
 	-moz-transform: translate3d(0,0,0)scale(1);
 	-moz-animation: slideIn .35s ease-in-out;
-	
+
 	transform: translate3d(0,0,0)scale(1);
 	animation: slideIn .35s ease-in-out;
 }
@@ -226,13 +226,13 @@ nav.open {
 /*Nav Shrinking Closed Effect*/
 nav.close {
 	opacity: .3;
-	
+
 	-webkit-transform: translate3d(5%,0,0)scale(.97);
 	-webkit-animation: slideOut .3s ease-in-out;
-	
+
 	-moz-transform: translate3d(5%,0,0)scale(.97);
 	-moz-animation: slideOut .3s ease-in-out;
-	
+
 	transform: translate3d(5%,0,0)scale(.97);
 	animation: slideOut .3s ease-in-out;
 }
@@ -268,14 +268,14 @@ nav.close {
 
 /*Content Sliding Open Effect*/
 header.open,
-.content.open 
-{   
+.content.open
+{
 	-webkit-transform: translate3d(240px,0,0);
 	-webkit-animation: open .5s ease-in-out;
-	
+
 	-moz-transform: translate3d(240px,0,0);
 	-moz-animation: open .5s ease-in-out;
-	
+
 	transform: translate3d(240px,0,0);
 	animation: open .5s ease-in-out;
 }
@@ -297,14 +297,14 @@ header.open,
 
 /*Content Sliding Closed Effect*/
 header.close,
-.content.close 
+.content.close
 {
 	-webkit-transform: translate3d(0,0,0);
 	-webkit-animation: close .3s ease-in-out;
-	
+
 	-moz-transform: translate3d(0,0,0);
 	-moz-animation: close .3s ease-in-out;
-	
+
 	transform: translate3d(0,0,0);
 	animation: close .3s ease-in-out;
 }
