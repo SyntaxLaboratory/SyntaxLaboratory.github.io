@@ -220,7 +220,10 @@ header h1 {
 	color: #276873;
 	font-weight: bold;
 }
-.item3 { grid-area: footer; }
+.item3 {
+	grid-area: footer;
+	font-weight: bold;
+}
 
 .fa {
 	color: #276873;
