@@ -68,6 +68,15 @@ a {text-decoration: none;}
 	box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
 }
 
+.grid-container-add {
+	margin:auto;
+	background-color: lightgrey;
+	width: 300px;
+  padding: 5px;
+	-webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+	box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+}
+
 .container {
 	overflow: hidden;
 	background-color: #000;
