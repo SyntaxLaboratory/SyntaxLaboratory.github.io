@@ -141,7 +141,7 @@ nav li a:hover {color: #000;}
 .header-section,
 .body-section,
 .footer-section
-{padding: 20px;}
+{padding: 10px;}
 
 .header-section {background-color: #000;}
 .body-section {background-color: lightgrey;}
@@ -404,7 +404,7 @@ nav li:first-child a.active,
 nav li:first-child a:hover
 {border-radius: 10px 0 0 0;}
 
-.header-section {margin-top: 10px;}
+.header-section {margin-top: 5px;}
 
 
 /* NAVIGATION ANNIMATION */
