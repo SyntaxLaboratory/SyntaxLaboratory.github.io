@@ -210,9 +210,22 @@ header h1 {
 	border-radius:20%;
 }
 
-.item1 { grid-area: menu; margin: auto; }
-.item2 { grid-area: main; }
+.item1 {
+	grid-area: menu;
+	margin: auto;
+}
+.item2 {
+	grid-area: main;
+	font-size: 15px;
+	color: #276873;
+	font-weight: bold;
+}
 .item3 { grid-area: footer; }
+
+.fa {
+	color: #276873;
+
+}
 
 .grid-container {
 	margin:auto;
@@ -247,7 +260,7 @@ header h1 {
 		cursor:pointer;
 		color:#ffffff;
 		font-family:Arial;
-		font-size:20px;
+		font-size:15px;
 		font-weight:bold;
 		padding:13px 32px;
 		text-decoration:none;
