@@ -1,7 +1,7 @@
 $(document).ready(function(){
   $(".sticky-window").sticky({topSpacing:55});
   $(".info-name").sticky({topSpacing:58});
-  $(".info-position").sticky({topSpacing:76});
+  $(".info-position").sticky({topSpacing:80});
   $(window).bind('scroll', function() {
     if ($(window).scrollTop() > 145) {
       $(".profile-name").addClass("profile-name-shrink").removeClass("profile-name");
