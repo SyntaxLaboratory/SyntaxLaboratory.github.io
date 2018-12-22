@@ -57,7 +57,7 @@ body {
 
 .sticky-window {
   background-color: white;
-  height: 5px;
+  height: 10px;
 }
  .sticky-window-change {
    border-top: 1px solid lightgrey;
@@ -120,7 +120,6 @@ body {
   display: block;
   background-color: white;
   color: black;
-  margin-top: 7px;
 	font-size: 25px;
 	word-spacing: 0px;
 	font-weight: 400;
@@ -147,7 +146,6 @@ body {
   display: block;
   font-size: 0px;
   font-family: 'Product Sans';
-  margin-top:10px;
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;

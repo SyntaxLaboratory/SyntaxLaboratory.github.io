@@ -1,6 +1,6 @@
 $(document).ready(function(){
   $(".sticky-window").sticky({topSpacing:56});
-  $(".info-name").sticky({topSpacing:60});
+  $(".info-name").sticky({topSpacing:65});
   $(".info-position").sticky({topSpacing:90});
   $(window).bind('scroll', function() {
     if ($(window).scrollTop() > 135) {
