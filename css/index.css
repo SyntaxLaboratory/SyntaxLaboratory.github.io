@@ -55,8 +55,9 @@ label {
 .fixed {
 	position: fixed;
   top: 60px;
+  left: 95px;
   color: black;
-  font-size: 30px;
+  font-size: 20px;
   word-spacing: 0px;
   font-weight: 400;
   text-transform: capitalize;
