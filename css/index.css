@@ -48,20 +48,27 @@ label {
 }
 
 .profile-main {
-  text-align: center;
   margin-top: 60px;
 }
 
-.fixed {
-	position: fixed;
-  top: 60px;
-  left: 95px;
-  color: black;
+.info {
+  text-align: center;
+}
+
+body {
+  height: 10000px;
+}
+
+.fixed-changed {
   font-size: 20px;
   word-spacing: 0px;
   font-weight: 400;
   text-transform: capitalize;
   font-family: 'Product Sans';
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
 }
 
 .profile-pic {
@@ -86,7 +93,7 @@ label {
 .profile-company {
   font-size: 30px;
   font-family: 'Product Sans';
-  display: block;
+  margin-top:20px;
 }
 
 .profile-position {
