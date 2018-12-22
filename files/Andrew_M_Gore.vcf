@@ -1,11 +1,11 @@
 BEGIN:VCARD
 VERSION:4.0
 PRODID:0
-N:Pattasseril;Naveen;;;
-FN:Naveen Pattasseril
-EMAIL:Naveen@SyntaxLabs.com
-ORG:Syntax Labs
-TEL:(301) 800-5014
+N:Gore;Andrew;;;
+FN:Andrew Gore
+EMAIL:Andrew.Gore@RamIndustries.com
+ORG:Ram Industries
+TEL:(202) 309-1441
 URL;type=pref:https://syntaxlaboratory.github.io/
 ADR:;1600 Pennsylvania Avenue NW;;Washington;DC;20500;United States
 END:VCARD
