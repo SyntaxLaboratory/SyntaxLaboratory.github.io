@@ -54,6 +54,8 @@ label {
 .info-name {
   background-color: white;
   text-align: center;
+  border-radius: 10px;
+  border-top-color: #FBBC05;
 }
 
 .info-company {
