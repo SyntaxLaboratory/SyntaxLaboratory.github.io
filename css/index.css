@@ -87,6 +87,7 @@ body {
 
 .profile-name {
   display: block;
+  margin-top: 5px;
   background-color: white;
 	color: black;
 	font-size: 30px;
