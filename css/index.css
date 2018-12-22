@@ -59,10 +59,20 @@ body {
   background-color: white;
   height: 10px;
 }
+ .sticky-window-change {
+   border-top: 1px solid #FBBC05;
+   border-left: 1px solid #FBBC05;
+   border-right: 1px solid #FBBC05;
+ }
 
 .info-name {
   background-color: white;
   text-align: center;
+}
+
+.info-name-change {
+  border-left: 1px solid #FBBC05;
+  border-right: 1px solid #FBBC05;
 }
 
 .info-company {
@@ -74,6 +84,12 @@ body {
   background-color: white;
   margin-top: 5px;
   text-align: center;
+}
+
+.info-position-change {
+  border-left: 1px solid #FBBC05;
+  border-right: 1px solid #FBBC05;
+  border-bottom: 1px solid #FBBC05;
 }
 
 .profile-pic {
