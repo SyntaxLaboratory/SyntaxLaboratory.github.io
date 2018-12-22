@@ -52,23 +52,11 @@ label {
 }
 
 .info {
-  text-align: center;
+  text-align: center;  
 }
 
 body {
   height: 10000px;
-}
-
-.fixed-changed {
-  font-size: 20px;
-  word-spacing: 0px;
-  font-weight: 400;
-  text-transform: capitalize;
-  font-family: 'Product Sans';
-  -webkit-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
-  -ms-transition: all 0.3s ease;
 }
 
 .profile-pic {
@@ -88,6 +76,24 @@ body {
 	text-transform: capitalize;
   font-family: 'Product Sans';
   margin-top: 10px;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+}
+
+.fixed-changed {
+  color: black;
+	font-size: 20px;
+	word-spacing: 0px;
+	font-weight: 400;
+  margin-top: 10px;
+	text-transform: capitalize;
+  font-family: 'Product Sans';
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
 }
 
 .profile-company {
