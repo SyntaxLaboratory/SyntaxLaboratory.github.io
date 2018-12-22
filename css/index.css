@@ -51,6 +51,11 @@ label {
   margin-top: 60px;
 }
 
+.sticky-window {
+  background-color: white;
+  height: 10px;
+}
+
 .info-name {
   background-color: white;
   text-align: center;
@@ -65,6 +70,7 @@ label {
 
 .info-position {
   background-color: white;
+  margin-top: 5px;
   text-align: center;
 }
 
@@ -140,7 +146,6 @@ body {
 
 .profile-position {
 	color: black;
-  background-color: white;
 	font-size: 15px;
   font-family: 'Product Sans';
 }
