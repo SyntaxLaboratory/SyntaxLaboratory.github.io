@@ -1,4 +1,4 @@
-@media only screen and (max-width: 780px) {
+@media only screen and (max-width: 768px) {
 
 @font-face {
   font-family: 'Product Sans';
@@ -51,8 +51,23 @@ label {
   margin-top: 60px;
 }
 
-.info {
-  text-align: center;  
+.info-name {
+  background-color: white;
+  text-align: center;
+}
+
+.info-company {
+  background-color: white;
+  text-align: center;
+}
+
+.info-position {
+  background-color: white;
+  text-align: center;
+}
+
+.temp {
+
 }
 
 body {
@@ -69,25 +84,27 @@ body {
 }
 
 .profile-name {
+  display: block;
+  background-color: white;
 	color: black;
 	font-size: 30px;
 	word-spacing: 0px;
 	font-weight: 400;
 	text-transform: capitalize;
   font-family: 'Product Sans';
-  margin-top: 10px;
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   -ms-transition: all 0.3s ease;
 }
 
-.fixed-changed {
+.profile-name-shrink {
+  display: block;
+  background-color: white;
   color: black;
-	font-size: 20px;
+	font-size: 25px;
 	word-spacing: 0px;
 	font-weight: 400;
-  margin-top: 10px;
 	text-transform: capitalize;
   font-family: 'Product Sans';
   -webkit-transition: all 0.3s ease;
@@ -97,13 +114,30 @@ body {
 }
 
 .profile-company {
+  display: block;
   font-size: 30px;
   font-family: 'Product Sans';
-  margin-top:20px;
+  margin-top:10px;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+}
+
+.profile-company-shrink {
+  display: block;
+  font-size: 0px;
+  font-family: 'Product Sans';
+  margin-top:10px;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
 }
 
 .profile-position {
 	color: black;
+  background-color: white;
 	font-size: 15px;
   font-family: 'Product Sans';
 }
