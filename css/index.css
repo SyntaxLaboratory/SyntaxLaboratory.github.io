@@ -51,6 +51,28 @@ body {
   color: white;
 }
 
+.social-media {
+  text-align: center;
+}
+
+.social-btn-linkedin {
+  color: #4875B4;
+  background: transparent;
+  border: 2px solid #4875B4;
+  border-radius: 6px;
+  display: inline-block;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: 'Product Sans';
+}
+
+.social-btn-linkedin:hover, .social-btn-linkedin:active{
+  background-color: #4875B4;
+  color: white;
+}
+
 .profile-main {
   margin-top: 60px;
 }
@@ -59,7 +81,8 @@ body {
   background-color: white;
   height: 10px;
 }
- .sticky-window-change {
+
+.sticky-window-change {
    border-top: 1px solid lightgrey;
    border-left: 1px solid lightgrey;
    border-right: 1px solid lightgrey;
@@ -186,7 +209,7 @@ body {
 .item2 {
 	grid-area: main;
 	font-size: 15px;
-	color: #276873;
+	color: #4285F4;
 	font-weight: bold;
 }
 .item3 {
@@ -195,15 +218,15 @@ body {
 }
 
 .fa-phone{
-	color: #276873;
+	color: #4285F4;
 }
 
 .fa-envelope{
-	color: #276873;
+	color: #4285F4;
 }
 
 .fa-link{
-	color: #276873;
+	color: #4285F4;
 }
 
 .fa:hover {
@@ -244,12 +267,7 @@ body {
 }
 
 .fa-linkedin {
-  background: #007bb5;
-  color: white;
-	padding: 20px;
-	font-size: 30px;
-	width: 10px;
-	text-align: center;
+	font-size: 25px;
 	text-decoration: none;
 	margin: 5px 2px;
 }
@@ -275,12 +293,9 @@ body {
     'menu footer footer footer footer footer';
   grid-gap: 5px;
   padding: 5px;
-	-webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
-	box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
 }
 
 .grid-container-links {
-	margin:auto;
 	margin:auto;
 	display: flex;
 	align-items: center;
@@ -293,8 +308,21 @@ body {
     'menu footer footer footer footer footer';
   grid-gap: 5px;
   padding: 5px;
-	-webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
-	box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+}
+
+.grid-social {
+	margin:auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 150px;
+  height: 40px;
+  display: grid;
+  grid-template-areas:
+    'menu main main main main main'
+    'menu footer footer footer footer footer'
+    'menu footer2 footer2 footer2 footer2 footer2';
+  grid-gap: 5px;
 }
 
 }
