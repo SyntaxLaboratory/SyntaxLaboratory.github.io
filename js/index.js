@@ -1,9 +1,9 @@
 $(document).ready(function(){
   $(".sticky-window").sticky({topSpacing:56});
-  $(".info-name").sticky({topSpacing:58});
-  $(".info-position").sticky({topSpacing:80});
+  $(".info-name").sticky({topSpacing:60});
+  $(".info-position").sticky({topSpacing:90});
   $(window).bind('scroll', function() {
-    if ($(window).scrollTop() > 145) {
+    if ($(window).scrollTop() > 135) {
       $(".profile-name").addClass("profile-name-shrink").removeClass("profile-name");
       $(".sticky-window").addClass("sticky-window-change");
       $(".info-name").addClass("info-name-change");
@@ -12,7 +12,7 @@ $(document).ready(function(){
       $(".sticky-window").removeClass("sticky-window-change");
       $(".info-name").removeClass("info-name-change");
     }
-    if ($(window).scrollTop() > 155) {
+    if ($(window).scrollTop() > 145) {
       $(".profile-company").addClass("profile-company-shrink").removeClass("profile-company");
       $(".info-position").addClass("info-position-change");
     } else {

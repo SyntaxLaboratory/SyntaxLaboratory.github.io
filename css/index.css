@@ -57,12 +57,12 @@ body {
 
 .sticky-window {
   background-color: white;
-  height: 10px;
+  height: 5px;
 }
  .sticky-window-change {
-   border-top: 1px solid #FBBC05;
-   border-left: 1px solid #FBBC05;
-   border-right: 1px solid #FBBC05;
+   border-top: 1px solid lightgrey;
+   border-left: 1px solid lightgrey;
+   border-right: 1px solid lightgrey;
  }
 
 .info-name {
@@ -71,8 +71,8 @@ body {
 }
 
 .info-name-change {
-  border-left: 1px solid #FBBC05;
-  border-right: 1px solid #FBBC05;
+  border-left: 1px solid lightgrey;
+  border-right: 1px solid lightgrey;
 }
 
 .info-company {
@@ -82,14 +82,13 @@ body {
 
 .info-position {
   background-color: white;
-  margin-top: 5px;
   text-align: center;
 }
 
 .info-position-change {
-  border-left: 1px solid #FBBC05;
-  border-right: 1px solid #FBBC05;
-  border-bottom: 1px solid #FBBC05;
+  border-left: 1px solid lightgrey;
+  border-right: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
 }
 
 .profile-pic {
