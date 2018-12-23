@@ -27,10 +27,9 @@ label {
   line-height: 20px;
 }
 
-body {
-  align-items: center;
-  text-align: center;
-  height: 10000px;
+p {
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 .btn {
@@ -221,7 +220,7 @@ body {
 	font-weight: bold;
 }
 
-.fa-phone{
+.fa-mobile-alt {
 	color: #4285F4;
 }
 
